@@ -1,10 +1,8 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import ItemViewSet, RegisterView
-
-
+from django.urls import path
+from .views import RegisterView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView # type: ignore
 
 urlpatterns = [
-
-    path('register/',RegisterView.as_view(), name='register'),  # Include the API URLs
+    path('users/register/', RegisterView.as_view(), name='register'),
+   
 ]

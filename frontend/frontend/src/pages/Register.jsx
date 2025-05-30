@@ -1,66 +1,90 @@
 import React, { useState } from 'react';
-import api from '../services/api';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const Register = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [password2, setPassword2] = useState('');
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
+function Register() {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    password2: '',
+  });
+
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const handleChange = (e) => {
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (password !== password2) {
+    setError('');
+    setSuccess('');
+
+    if (formData.password !== formData.password2) {
       setError('Las contraseñas no coinciden');
       return;
     }
+
     try {
-      await api.post('users/register/', { username, email, password, password2 });
-      navigate('/login');
+      const res = await axios.post('http://localhost:8000/api/users/register/', formData);
+      setSuccess('Usuario registrado correctamente');
+      setFormData({ username: '', email: '', password: '', password2: '' });
     } catch (err) {
-      setError('Error en el registro');
+      if (err.response && err.response.data) {
+        setError(JSON.stringify(err.response.data));
+      } else {
+        setError('Error desconocido');
+      }
     }
   };
 
   return (
     <div>
-      <h2>Registrar</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <h2>Registro</h2>
+      {error && <div style={{color:'red'}}>{error}</div>}
+      {success && <div style={{color:'green'}}>{success}</div>}
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Usuario"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        /><br/>
-        <input
-          type="email"
-          placeholder="Correo"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        /><br/>
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        /><br/>
-        <input
-          type="password"
-          placeholder="Confirmar Contraseña"
-          value={password2}
-          onChange={(e) => setPassword2(e.target.value)}
-          required
-        /><br/>
+        <input 
+          type="text" 
+          name="username" 
+          placeholder="Usuario" 
+          value={formData.username} 
+          onChange={handleChange} 
+          required 
+        />
+        <br />
+        <input 
+          type="email" 
+          name="email" 
+          placeholder="Correo electrónico" 
+          value={formData.email} 
+          onChange={handleChange} 
+          required 
+        />
+        <br />
+        <input 
+          type="password" 
+          name="password" 
+          placeholder="Contraseña" 
+          value={formData.password} 
+          onChange={handleChange} 
+          required 
+        />
+        <br />
+        <input 
+          type="password" 
+          name="password2" 
+          placeholder="Confirmar contraseña" 
+          value={formData.password2} 
+          onChange={handleChange} 
+          required 
+        />
+        <br />
         <button type="submit">Registrar</button>
       </form>
     </div>
   );
-};
+}
 
 export default Register;
