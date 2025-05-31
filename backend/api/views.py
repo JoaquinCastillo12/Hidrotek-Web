@@ -9,3 +9,12 @@ class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
+# views.py
+from rest_framework_simplejwt.views import TokenObtainPairView
+
+from .serializers import CustomTokenObtainPairSerializer
+
+class LoginView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+    permission_classes = [AllowAny]
+
