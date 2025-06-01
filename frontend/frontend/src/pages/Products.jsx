@@ -1,48 +1,74 @@
-import React, { useEffect, useState } from 'react';
+// src/pages/ProductsPage.jsx
+import { useState, useEffect } from 'react';
+import Header from '../components/Header';
+import Breadcrumbs from '../components/Breadcrumbs';
+import SidebarFilter from '../components/SidebarFilter';
+import SearchBar from '../components/SearchBar';
+import ProductList from '../components/ProductList';
+import Footer from '../components/footer';
 import axios from 'axios';
 
-const ProductoList = () => {
-  const [productos, setProductos] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function ProductsPage() {
+  const [products, setProducts] = useState([]);
+  const [filters, setFilters] = useState({ categoria: '', marca: '', search: '' });
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [marcas, setMarcas] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:8000/api/productos/')
       .then(response => {
-        setProductos(response.data);
-        setLoading(false);
+        setProducts(response.data);
+        const uniqueCategorias = [...new Set(response.data.map(p => p.categoria))];
+        const uniqueMarcas = [...new Set(response.data.map(p => p.marca))];
+        setCategorias(uniqueCategorias);
+        setMarcas(uniqueMarcas);
       })
-      .catch(error => {
-        console.error('Error al obtener los productos:', error);
-        setLoading(false);
-      });
+      .catch(error => console.error('Error al obtener productos:', error));
   }, []);
 
-  if (loading) return <p>Cargando productos...</p>;
+  useEffect(() => {
+    const result = products.filter(p => {
+      return (
+        (!filters.categoria || p.categoria.toLowerCase() === filters.categoria.toLowerCase()) &&
+        (!filters.marca || p.marca.toLowerCase() === filters.marca.toLowerCase()) &&
+        (!filters.search || p.nombre.toLowerCase().includes(filters.search.toLowerCase()))
+      );
+    });
+    setFilteredProducts(result);
+  }, [filters, products]);
+
+  const handleFilterChange = (key, value) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleSearch = value => {
+    setFilters(prev => ({ ...prev, search: value }));
+  };
+
+  const handleAddToCart = product => {
+    alert(`Agregado: ${product.nombre}`);
+  };
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Lista de Productos</h1>
-      <ul className="space-y-2">
-        {productos.map(producto => (
-          <li key={producto.id} className="border p-3 rounded shadow">
-            {producto.imagen && (
-              <img
-                src={producto.imagen}
-                alt={producto.nombre}
-                className="w-full h-40 object-cover mb-2 rounded"
-              />
-            )}
-            <p>Precio: ${producto.precio}</p>
-            <p>Marca: {producto.marca}</p>
-            <p>Descripción: {producto.descripcion}</p>
-            <p>Categoría: {producto.categoria}</p>
-            {/* Puedes agregar más campos dependiendo de tu serializer */}
-          </li>
-        ))}
-      </ul>
+    <div className="bg-blue-50 min-h-screen">
+      <Header />
+      <main className="grid grid-cols-5 gap-6 p-6">
+        <div className="col-span-1">
+          <SidebarFilter
+            categorias={categorias}
+            marcas={marcas}
+            onFilterChange={handleFilterChange}
+          />
+        </div>
+        <div className="col-span-4">
+          <Breadcrumbs items={["Inicio", "Productos"]} />
+          <SearchBar onSearch={handleSearch} />
+          <ProductList products={filteredProducts} onAddToCart={handleAddToCart} />
+        </div>
+      </main>
+      <Footer />
     </div>
+    
   );
-};
-
-export default ProductoList;
-
+}

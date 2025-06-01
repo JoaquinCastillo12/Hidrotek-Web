@@ -71,7 +71,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 class ProductoDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
-        fields = ['id', 'nombre', 'descripcion', 'precio', 'cantidad', 'imagen']
+        fields = ['id', 'nombre', 'descripcion', 'precio', 'stock', 'imagen']
         read_only_fields = ['id']
 
     def to_representation(self, instance):
@@ -97,7 +97,7 @@ class ProductoListSerializer(serializers.ModelSerializer):
 class ProductoCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
-        fields = ['nombre', 'descripcion', 'precio', 'cantidad', 'imagen']
+        fields = ['nombre', 'descripcion', 'precio', 'stock', 'imagen']
         read_only_fields = ['id']
 
     def create(self, validated_data):
@@ -106,14 +106,14 @@ class ProductoCreateSerializer(serializers.ModelSerializer):
 class ProductoUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
-        fields = ['nombre', 'descripcion', 'precio', 'cantidad', 'imagen']
+        fields = ['nombre', 'descripcion', 'precio', 'stock', 'imagen']
         read_only_fields = ['id']
 
     def update(self, instance, validated_data):
         instance.nombre = validated_data.get('nombre', instance.nombre)
         instance.descripcion = validated_data.get('descripcion', instance.descripcion)
         instance.precio = validated_data.get('precio', instance.precio)
-        instance.cantidad = validated_data.get('cantidad', instance.cantidad)
+        instance.stock = validated_data.get('stock', instance.stock)
         instance.imagen = validated_data.get('imagen', instance.imagen)
         instance.save()
         return instance
@@ -142,7 +142,7 @@ class DetalleCotizacionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = DetalleCotizacion
-        fields = ['id', 'cotizacion', 'producto', 'cantidad', 'precio_unitario', 'subtotal']
+        fields = ['id', 'cotizacion', 'producto', 'stock', 'precio_unitario', 'subtotal']
         read_only_fields = ['id', 'subtotal']
 
     def create(self, validated_data):
