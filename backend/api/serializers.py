@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import Producto, Cotizacion, DetalleCotizacion
+from .models import Producto, Cotizacion, DetalleCotizacion, Marca, Categoria
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -32,7 +32,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
 
-        # Puedes agregar más info si quieres (como el username)
         data['username'] = self.user.username
         data['id'] = self.user.id
 
@@ -136,6 +135,32 @@ class CotizacionSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Cotizacion.objects.create(**validated_data)
+    
+class CotizacionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cotizacion
+        fields = ['cliente', 'fecha']
+        read_only_fields = ['id', 'total']
+
+    def update(self, instance, validated_data):
+        instance.cliente = validated_data.get('cliente', instance.cliente)
+        instance.fecha = validated_data.get('fecha', instance.fecha)
+        instance.save()
+        return instance
+    
+class DetalleCotizacionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetalleCotizacion
+        fields = ['producto', 'stock', 'precio_unitario']
+        read_only_fields = ['id', 'subtotal']
+
+    def update(self, instance, validated_data):
+        instance.producto = validated_data.get('producto', instance.producto)
+        instance.stock = validated_data.get('stock', instance.stock)
+        instance.precio_unitario = validated_data.get('precio_unitario', instance.precio_unitario)
+        instance.subtotal = instance.stock * instance.precio_unitario
+        instance.save()
+        return instance
     
 class DetalleCotizacionSerializer(serializers.ModelSerializer):
     producto = ProductoListSerializer()

@@ -4,7 +4,8 @@ from .serializers import RegisterSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import Producto 
-from .serializers import CustomTokenObtainPairSerializer, ProductoCreateSerializer, ProductoListSerializer, ProductoDetailSerializer
+from .serializers import CustomTokenObtainPairSerializer, ProductoCreateSerializer, ProductoListSerializer, ProductoDetailSerializer, CotizacionUpdateSerializer
+from rest_framework.response import Response
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -14,6 +15,13 @@ class RegisterView(generics.CreateAPIView):
 class LoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
     permission_classes = [AllowAny]
+    
+class LogoutView(generics.GenericAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        request.auth.delete()
+        return Response({"message": "Logged out successfully"}, status=204)
 
 class ProductoListView(generics.ListAPIView):
     queryset = Producto.objects.all()
@@ -25,13 +33,34 @@ class ProductoDetailView(generics.RetrieveAPIView):
     serializer_class = ProductoDetailSerializer
     permission_classes = [AllowAny]
     
-class ProductoCreateView(generics.CreateAPIView):
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)  
+        
+class CotizacionCreateView(generics.CreateAPIView):
     queryset = Producto.objects.all()
     serializer_class = ProductoCreateSerializer
     permission_classes = [permissions.IsAuthenticated]
     
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)  # Save the user who created the product
+        serializer.save(user=self.request.user)
+
+   
+class CotizacionDetailView(generics.RetrieveAPIView):
+    serializer_class = ProductoDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        return Producto.objects.filter(user=self.request.user)
+    
+class CotizacionUpdateView(generics.UpdateAPIView):
+    serializer_class = ProductoDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        return Producto.objects.filter(user=self.request.user)
+    
+    def perform_update(self, serializer):
+        serializer.save(user=self.request.user)
     
     
 

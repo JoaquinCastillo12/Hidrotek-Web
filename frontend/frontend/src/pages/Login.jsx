@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -6,6 +6,13 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const access = localStorage.getItem('access');
+    if (access) {
+      navigate('/products');
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,14 +30,11 @@ const Login = () => {
 
       const data = await res.json();
 
-      // Guardar tokens en localStorage
-      localStorage.setItem('access_token', data.access);
-      localStorage.setItem('refresh_token', data.refresh);
+      localStorage.setItem('access', data.access);
+      localStorage.setItem('refresh', data.refresh);
       localStorage.setItem('username', data.username);
-
-      // Opcional: navegar a página protegida
-      navigate('/Products');
-
+      window.dispatchEvent(new Event('authChange'));
+      navigate('/products');
     } catch (err) {
       setError(err.message);
     }
@@ -73,6 +77,14 @@ const Login = () => {
             Ingresar
           </button>
         </form>
+
+        {/* Botón para ir a registro */}
+        <button
+          onClick={() => navigate('/register')}
+          className="mt-4 w-full border border-indigo-500 text-indigo-500 py-2 rounded-lg hover:bg-indigo-100 transition duration-200"
+        >
+          Crear cuenta
+        </button>
       </div>
     </div>
   );
