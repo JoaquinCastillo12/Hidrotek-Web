@@ -62,6 +62,9 @@ class CotizacionUpdateView(generics.UpdateAPIView):
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
     
+from django.shortcuts import render
+
 def HomeView(request):
-    return Response({"message": "Welcome to the API!"}, status=200)
+    return render(request, 'home.html')
+
 
