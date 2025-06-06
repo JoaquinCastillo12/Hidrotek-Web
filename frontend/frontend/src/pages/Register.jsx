@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 function Register() {
+  const { loginUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -19,52 +21,39 @@ function Register() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError('');
-  setSuccess('');
+    e.preventDefault();
+    setError('');
+    setSuccess('');
 
-  if (formData.password !== formData.password2) {
-    setError('Las contraseñas no coinciden');
-    return;
-  }
-
-  try {
-// Registro
-console.log('Registro:', formData);
-await axios.post('http://localhost:8000/api/register/', formData);
-
-// Login automático
-console.log('Login:', {
-  username: formData.username,
-  password: formData.password,
-});
-const loginRes = await axios.post('http://localhost:8000/api/login/', {
-  username: formData.username,
-  password: formData.password,
-});
-console.log('Respuesta login:', loginRes.data);
-
-
-
-    // 3. Guardar tokens correctamente desde loginRes
-    const { access, refresh } = loginRes.data;
-    localStorage.setItem('access', access);
-    localStorage.setItem('refresh', refresh);
-    localStorage.setItem('username', formData.username);
-
-    // Notificar al Header que el usuario ha iniciado sesión
-    window.dispatchEvent(new Event('authChange'));
-
-    navigate('/');
-  } catch (err) {
-    if (err.response && err.response.data) {
-      setError(JSON.stringify(err.response.data));
-    } else {
-      setError('Error desconocido');
+    if (formData.password !== formData.password2) {
+      setError('Las contraseñas no coinciden');
+      return;
     }
-  }
-};
 
+    try {
+      // Registro (envía ambos passwords)
+      await api.post('register/', {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        password2: formData.password2,
+      });
+
+      // Login automático usando el contexto
+      const success = await loginUser(formData.username, formData.password);
+      if (success) {
+        navigate('/');
+      } else {
+        setError('Registro exitoso, pero error al iniciar sesión');
+      }
+    } catch (err) {
+      if (err.response && err.response.data) {
+        setError(JSON.stringify(err.response.data));
+      } else {
+        setError('Error desconocido');
+      }
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

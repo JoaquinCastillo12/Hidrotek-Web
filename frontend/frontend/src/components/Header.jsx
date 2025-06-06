@@ -1,32 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useContext } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { authTokens, logoutUser } = useContext(AuthContext);
+  const isAuthenticated = !!authTokens;
   const navigate = useNavigate();
 
-useEffect(() => {
-  const checkAuth = () => {
-    const token = localStorage.getItem('access'); // Aquí cambia a 'access'
-    setIsAuthenticated(!!token);
+  const handleLogout = () => {
+    logoutUser();
+    navigate('/');
   };
-
-  checkAuth();
-
-  window.addEventListener('authChange', checkAuth);
-  return () => window.removeEventListener('authChange', checkAuth);
-}, []);
-
-const handleLogout = () => {
-  localStorage.removeItem('access');    // Igual aquí
-  localStorage.removeItem('refresh');
-  localStorage.removeItem('username');
-  window.dispatchEvent(new Event('authChange'));
-  navigate('/');
-};
-
 
   return (
     <header className="bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow">

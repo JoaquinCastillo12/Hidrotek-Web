@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const { loginUser } = useContext(AuthContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -17,26 +19,11 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const res = await fetch('http://localhost:8000/api/login/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-
-      if (!res.ok) {
-        throw new Error('Credenciales incorrectas');
-      }
-
-      const data = await res.json();
-
-      localStorage.setItem('access', data.access);
-      localStorage.setItem('refresh', data.refresh);
-      localStorage.setItem('username', data.username);
-      window.dispatchEvent(new Event('authChange'));
-      navigate('/products');
-    } catch (err) {
-      setError(err.message);
+    const success = await loginUser(username, password);
+    if (success) {
+      navigate('/'); // Redirige al home o donde prefieras
+    } else {
+      setError('Credenciales incorrectas');
     }
   };
 
