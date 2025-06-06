@@ -1,5 +1,5 @@
 // src/components/SidebarFilter.jsx
-export default function SidebarFilter({ categorias, marcas, onFilterChange }) {
+export default function SideBarFilter({ categorias, marcas, onFilterChange }) {
   return (
     <aside className="bg-blue-50 p-4 rounded-lg space-y-6 shadow">
       <h2 className="text-blue-700 font-semibold text-lg border-b pb-2">Filtrar por</h2>
