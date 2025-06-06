@@ -62,5 +62,6 @@ class CotizacionUpdateView(generics.UpdateAPIView):
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
     
-    
+def HomeView(request):
+    return Response({"message": "Welcome to the API!"}, status=200)
 
