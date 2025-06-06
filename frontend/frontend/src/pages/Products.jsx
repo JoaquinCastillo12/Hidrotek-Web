@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Breadcrumbs from '../components/Breadcrumbs';
-import SidebarFilter from '../components/SidebarFilter';
+import SideBarFilter from '../components/SideBarFilter';
 import SearchBar from '../components/SearchBar';
 import ProductList from '../components/ProductList';
 import Footer from '../components/footer';
@@ -55,7 +55,7 @@ export default function ProductsPage() {
       <Header />
       <main className="grid grid-cols-5 gap-6 p-6">
         <div className="col-span-1">
-          <SidebarFilter
+          <SideBarFilter
             categorias={categorias}
             marcas={marcas}
             onFilterChange={handleFilterChange}
