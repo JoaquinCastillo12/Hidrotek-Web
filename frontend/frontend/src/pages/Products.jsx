@@ -16,7 +16,7 @@ export default function ProductsPage() {
   const [marcas, setMarcas] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/productos/')
+    axios.get('https://hidrotek.onrender.com/api/productos/')
       .then(response => {
         setProducts(response.data);
         const uniqueCategorias = [...new Set(response.data.map(p => p.categoria))];
