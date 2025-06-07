@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react";
 
-export default function Footer() {
+export default function footer() {
   return (
        <footer className="w-full py-8 bg-blue-900 text-white mt-8">
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
