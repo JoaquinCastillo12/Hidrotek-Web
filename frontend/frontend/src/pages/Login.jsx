@@ -1,77 +1,184 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useContext, useEffect } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { Icon } from "@iconify/react";
 
 const Login = () => {
   const { loginUser } = useContext(AuthContext);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const access = localStorage.getItem('access');
+    const access = localStorage.getItem("access");
     if (access) {
-      navigate('/products');
+      navigate("/products");
     }
   }, [navigate]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const toggleVisibility = () => setIsVisible((v) => !v);
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
     const success = await loginUser(username, password);
+    setIsLoading(false);
     if (success) {
-      navigate('/'); // Redirige al home o donde prefieras
+      navigate("/");
     } else {
-      setError('Credenciales incorrectas');
+      setError("Credenciales incorrectas");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-indigo-200">
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">Iniciar sesión</h2>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-600">Nombre de usuario</label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              placeholder="Tu usuario"
-              required
-            />
-          </div>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-600">Contraseña</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-              placeholder="••••••••"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-indigo-500 text-white py-2 rounded-lg hover:bg-indigo-600 transition duration-200"
-          >
-            Ingresar
-          </button>
-        </form>
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-dots">
+      <div className="login-animation w-full max-w-md">
+        <div className="login-card bg-white rounded-xl border-none shadow-lg">
+          <div className="px-8 py-10 flex flex-col gap-6">
+            {/* Login Header */}
+            <div className="flex flex-col items-center gap-2 text-center">
+              <div className="bg-blue-100 p-3 rounded-full">
+                <Icon icon="lucide:lock" className="text-blue-600 text-2xl" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Iniciar sesión
+                </h2>
+                <p className="text-gray-500 text-sm mt-1">
+                  Ingresa tus credenciales para continuar
+                </p>
+              </div>
+            </div>
 
-        {/* Botón para ir a registro */}
-        <button
-          onClick={() => navigate('/register')}
-          className="mt-4 w-full border border-indigo-500 text-indigo-500 py-2 rounded-lg hover:bg-indigo-100 transition duration-200"
-        >
-          Crear cuenta
-        </button>
+            {error && (
+              <p className="text-red-500 text-center mb-2">{error}</p>
+            )}
+
+            {/* Login Form */}
+            <form className="flex flex-col gap-4" onSubmit={handleLogin}>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nombre de usuario
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Icon icon="lucide:user" className="text-gray-400 text-lg" />
+                  </span>
+                  <input
+                    type="text"
+                    className="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Tu usuario"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Contraseña
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Icon icon="lucide:key" className="text-gray-400 text-lg" />
+                  </span>
+                  <input
+                    type={isVisible ? "text" : "password"}
+                    className="pl-10 pr-10 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Ingresa tu contraseña"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 flex items-center pr-3 focus:outline-none"
+                    onClick={toggleVisibility}
+                    tabIndex={-1}
+                  >
+                    {isVisible ? (
+                      <Icon icon="lucide:eye" className="text-gray-400 text-lg" />
+                    ) : (
+                      <Icon
+                        icon="lucide:eye-off"
+                        className="text-gray-400 text-lg"
+                      />
+                    )}
+                  </button>
+                </div>
+              </div>
+              <div className="flex items-center justify-between">
+                <label className="flex items-center text-sm">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="mr-2 accent-blue-600"
+                  />
+                  Recordarme
+                </label>
+                <button
+                  type="button"
+                  className="text-sm text-blue-600 hover:underline"
+                  tabIndex={-1}
+                >
+                  ¿Olvidaste tu contraseña?
+                </button>
+              </div>
+              <button
+                type="submit"
+                className="mt-2 font-medium w-full py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-60"
+                disabled={isLoading}
+              >
+                {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
+              </button>
+            </form>
+
+            {/* Divider */}
+            <div className="flex items-center my-2">
+              <div className="flex-1 h-px bg-gray-200"></div>
+              <span className="px-2 text-gray-500 text-sm">
+                o continuar con
+              </span>
+              <div className="flex-1 h-px bg-gray-200"></div>
+            </div>
+
+            {/* Social Login */}
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                className="border border-gray-200 rounded-md py-2 flex items-center justify-center gap-2 hover:bg-gray-50 transition"
+              >
+                <Icon icon="logos:google-icon" className="text-lg" />
+                Google
+              </button>
+              <button
+                type="button"
+                className="border border-gray-200 rounded-md py-2 flex items-center justify-center gap-2 hover:bg-gray-50 transition"
+              >
+                <Icon icon="logos:facebook" className="text-lg" />
+                Facebook
+              </button>
+            </div>
+
+            {/* Register Link */}
+            <div className="flex justify-center mt-4">
+              <p className="text-gray-500 text-sm">
+                ¿No tienes una cuenta?{" "}
+                <span
+                  className="text-blue-600 font-medium cursor-pointer hover:underline"
+                  onClick={() => navigate("/register")}
+                >
+                  Regístrate
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -27,7 +27,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
     
 
-
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)

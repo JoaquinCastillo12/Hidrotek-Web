@@ -1,66 +1,155 @@
 import { useState, useContext } from 'react';
 import { Menu, X } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { Icon } from "@iconify/react";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { authTokens, logoutUser } = useContext(AuthContext);
   const isAuthenticated = !!authTokens;
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logoutUser();
     navigate('/');
   };
 
+  // Helper para saber si la ruta está activa
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <header className="bg-gradient-to-r from-blue-600 to-blue-400 text-white shadow">
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+    <header className="bg-background border-b border-gray-200">
+      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold tracking-wide flex items-center gap-2">
-          <img src="/logo.png" alt="Logo" className="h-8 w-8" />
-          <span>Tienda de Agua</span>
+        <Link to="/" className="flex items-center gap-2 font-bold text-lg text-blue-700">
+          <Icon icon="lucide:droplets" className="text-blue-600 text-2xl" />
+          Hidrotek
         </Link>
 
-        {/* Menú grande (desktop) */}
-        <nav className="hidden md:flex gap-6 items-center font-medium">
-          <Link to="/products" className="hover:text-blue-100 transition">Productos</Link>
-          <Link to="/cotizaciones" className="hover:text-blue-100 transition">Cotizaciones</Link>
-          <Link to="/contacto" className="hover:text-blue-100 transition">Contacto</Link>
+        {/* Menú central */}
+        <nav className="hidden md:flex flex-1 justify-center gap-8 items-center font-medium">
+          <Link
+            to="/"
+            className={
+              (isActive("/")
+                ? "text-blue-700 font-semibold underline underline-offset-4 "
+                : "text-gray-700 hover:text-blue-700 ") +
+              "transition"
+            }
+          >
+            Inicio
+          </Link>
+          <Link
+            to="/products"
+            className={
+              (isActive("/products")
+                ? "text-blue-700 font-semibold underline underline-offset-4 "
+                : "text-gray-700 hover:text-blue-700 ") +
+              "transition"
+            }
+          >
+            Productos
+          </Link>
+          <Link
+            to="/nosotros"
+            className={
+              (isActive("/nosotros")
+                ? "text-blue-700 font-semibold underline underline-offset-4 "
+                : "text-gray-700 hover:text-blue-700 ") +
+              "transition"
+            }
+          >
+            Nosotros
+          </Link>
+          <Link
+            to="/contacto"
+            className={
+              (isActive("/contacto")
+                ? "text-blue-700 font-semibold underline underline-offset-4 "
+                : "text-gray-700 hover:text-blue-700 ") +
+              "transition"
+            }
+          >
+            Contacto
+          </Link>
+        </nav>
 
+        {/* Botones de sesión a la derecha */}
+        <div className="hidden md:flex gap-2 items-center ml-4">
           {!isAuthenticated ? (
             <>
-              <Link to="/login" className="bg-white text-blue-600 px-4 py-2 rounded shadow hover:bg-blue-100 transition">Iniciar Sesión</Link>
-              <Link to="/register" className="bg-blue-800 text-white px-4 py-2 rounded shadow hover:bg-blue-900 transition">Registrarse</Link>
+              <Link to="/login" className="bg-white text-blue-600 px-4 py-2 rounded-md font-medium shadow hover:bg-blue-50 transition">Iniciar Sesión</Link>
+              <Link to="/register" className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium shadow hover:bg-blue-700 transition">Registrarse</Link>
             </>
           ) : (
-            <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded shadow hover:bg-red-700 transition">
+            <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded-md font-medium shadow hover:bg-red-700 transition">
               Cerrar Sesión
             </button>
           )}
-        </nav>
+        </div>
 
         {/* Botón de menú hamburguesa */}
-        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-white">
+        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-blue-700">
           {menuOpen ? <X size={28} /> : <Menu size={28} />}
         </button>
       </div>
 
       {/* Menú móvil */}
       {menuOpen && (
-        <div className="md:hidden bg-blue-500 px-6 pb-4 space-y-4 text-white font-medium">
-          <Link to="/products" className="block">Productos</Link>
-          <Link to="/cotizaciones" className="block">Cotizaciones</Link>
-          <Link to="/contacto" className="block">Contacto</Link>
-
+        <div className="md:hidden bg-white px-6 pb-4 space-y-4 text-blue-700 font-medium shadow">
+          <Link
+            to="/"
+            className={
+              (isActive("/")
+                ? "text-blue-700 font-semibold underline underline-offset-4 "
+                : "text-gray-700 hover:text-blue-700 ") +
+              "block transition"
+            }
+          >
+            Inicio
+          </Link>
+          <Link
+            to="/products"
+            className={
+              (isActive("/products")
+                ? "text-blue-700 font-semibold underline underline-offset-4 "
+                : "text-gray-700 hover:text-blue-700 ") +
+              "block transition"
+            }
+          >
+            Productos
+          </Link>
+          <Link
+            to="/nosotros"
+            className={
+              (isActive("/nosotros")
+                ? "text-blue-700 font-semibold underline underline-offset-4 "
+                : "text-gray-700 hover:text-blue-700 ") +
+              "block transition"
+            }
+          >
+            Nosotros
+          </Link>
+          <Link
+            to="/contacto"
+            className={
+              (isActive("/contacto")
+                ? "text-blue-700 font-semibold underline underline-offset-4 "
+                : "text-gray-700 hover:text-blue-700 ") +
+              "block transition"
+            }
+          >
+            Contacto
+          </Link>
           {!isAuthenticated ? (
             <>
-              <Link to="/login" className="block bg-white text-blue-600 px-4 py-2 rounded shadow">Iniciar Sesión</Link>
-              <Link to="/register" className="block bg-blue-800 text-white px-4 py-2 rounded shadow">Registrarse</Link>
+              <Link to="/login" className="block bg-blue-50 text-blue-700 px-4 py-2 rounded-md shadow">Iniciar Sesión</Link>
+              <Link to="/register" className="block bg-blue-600 text-white px-4 py-2 rounded-md shadow">Registrarse</Link>
             </>
           ) : (
-            <button onClick={handleLogout} className="block w-full bg-red-600 text-white px-4 py-2 rounded shadow">
+            <button onClick={handleLogout} className="block w-full bg-red-600 text-white px-4 py-2 rounded-md shadow">
               Cerrar Sesión
             </button>
           )}

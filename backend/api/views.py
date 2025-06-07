@@ -6,6 +6,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import Producto 
 from .serializers import CustomTokenObtainPairSerializer, ProductoCreateSerializer, ProductoListSerializer, ProductoDetailSerializer, CotizacionUpdateSerializer
 from rest_framework.response import Response
+from django.shortcuts import render
+
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
@@ -62,9 +64,8 @@ class CotizacionUpdateView(generics.UpdateAPIView):
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
     
-from django.shortcuts import render
 
 def HomeView(request):
-    return render(request, 'home.html')
+    return render(request, 'Prueba.html')
 
 

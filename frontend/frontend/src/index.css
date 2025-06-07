@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f8faff;
+}
+
+.login-animation {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-card {
+  box-shadow: 0 10px 40px -10px rgba(0, 114, 255, 0.1);
+}
+
+.bg-dots {
+  background-image: radial-gradient(#0072ff15 1px, transparent 1px);
+  background-size: 20px 20px;
+}

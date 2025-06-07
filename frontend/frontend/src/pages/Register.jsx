@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { Icon } from "@iconify/react";
 
 function Register() {
   const { loginUser } = useContext(AuthContext);
@@ -31,7 +32,6 @@ function Register() {
     }
 
     try {
-      // Registro (envía ambos passwords)
       await api.post('register/', {
         username: formData.username,
         email: formData.email,
@@ -39,7 +39,6 @@ function Register() {
         password2: formData.password2,
       });
 
-      // Login automático usando el contexto
       const success = await loginUser(formData.username, formData.password);
       if (success) {
         navigate('/');
@@ -56,57 +55,132 @@ function Register() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-4 bg-white rounded-2xl shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-gray-800">Registro</h2>
+    <div className="min-h-screen w-full flex items-center justify-center p-4 bg-dots">
+      <div className="login-animation w-full max-w-md">
+        <div className="login-card bg-white rounded-xl border-none shadow-lg">
+          <div className="px-8 py-10 flex flex-col gap-6">
+            {/* Header */}
+            <div className="flex flex-col items-center gap-2 text-center">
+              <div className="bg-blue-100 p-3 rounded-full">
+                <Icon icon="lucide:user-plus" className="text-blue-600 text-2xl" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  Crear cuenta
+                </h2>
+                <p className="text-gray-500 text-sm mt-1">
+                  Regístrate para continuar
+                </p>
+              </div>
+            </div>
 
-        {error && <div className="text-red-600 text-sm text-center">{error}</div>}
-        {success && <div className="text-green-600 text-sm text-center">{success}</div>}
+            {error && (
+              <p className="text-red-500 text-center mb-2">{error}</p>
+            )}
+            {success && (
+              <p className="text-green-600 text-center mb-2">{success}</p>
+            )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            name="username"
-            placeholder="Usuario"
-            value={formData.username}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Correo electrónico"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Contraseña"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          <input
-            type="password"
-            name="password2"
-            placeholder="Confirmar contraseña"
-            value={formData.password2}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-          />
-          <button
-            type="submit"
-            className="w-full py-2 font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition duration-300"
-          >
-            Registrar
-          </button>
-        </form>
+            {/* Register Form */}
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nombre de usuario
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Icon icon="lucide:user" className="text-gray-400 text-lg" />
+                  </span>
+                  <input
+                    type="text"
+                    name="username"
+                    className="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Tu usuario"
+                    value={formData.username}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Correo electrónico
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Icon icon="lucide:mail" className="text-gray-400 text-lg" />
+                  </span>
+                  <input
+                    type="email"
+                    name="email"
+                    className="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="correo@ejemplo.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Contraseña
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Icon icon="lucide:key" className="text-gray-400 text-lg" />
+                  </span>
+                  <input
+                    type="password"
+                    name="password"
+                    className="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Contraseña"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Confirmar contraseña
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                    <Icon icon="lucide:key-round" className="text-gray-400 text-lg" />
+                  </span>
+                  <input
+                    type="password"
+                    name="password2"
+                    className="pl-10 pr-3 py-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Repite la contraseña"
+                    value={formData.password2}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="mt-2 font-medium w-full py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-60"
+              >
+                Registrarse
+              </button>
+            </form>
+
+            {/* Link to login */}
+            <div className="flex justify-center mt-4">
+              <p className="text-gray-500 text-sm">
+                ¿Ya tienes una cuenta?{" "}
+                <span
+                  className="text-blue-600 font-medium cursor-pointer hover:underline"
+                  onClick={() => navigate("/login")}
+                >
+                  Inicia sesión
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
