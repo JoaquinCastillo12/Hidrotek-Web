@@ -137,7 +137,7 @@ export default function Header() {
             Productos
           </Link>
           <Link
-            to="/nosotros"
+            to="/about-us"
             className={
               (isActive("/nosotros")
                 ? "text-blue-700 font-semibold underline underline-offset-4 "
@@ -148,7 +148,7 @@ export default function Header() {
             Nosotros
           </Link>
           <Link
-            to="/contacto"
+            to="/contact"
             className={
               (isActive("/contacto")
                 ? "text-blue-700 font-semibold underline underline-offset-4 "
