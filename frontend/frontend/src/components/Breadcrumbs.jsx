@@ -1,6 +1,6 @@
 export default function Breadcrumbs({ items }) {
   return (
-    <nav className="text-sm text-blue-800 mb-4">
+    <nav className="block text-blue-700 font-medium mb-2">
       {items.map((item, index) => (
         <span key={index}>
           {item}

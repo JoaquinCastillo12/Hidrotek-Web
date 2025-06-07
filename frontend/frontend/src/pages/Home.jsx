@@ -245,7 +245,7 @@ export default function Home() {
 
       {/* Contacto */}
       <section className="w-full bg-white py-16" id="contacto">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-12">
+         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row gap-12">
           <div className="flex-1">
             <h2 className="text-3xl font-bold text-blue-800 mb-3">Contáctenos</h2>
             <p className="text-gray-700 mb-6">
@@ -258,7 +258,7 @@ export default function Home() {
                 </span>
                 <div>
                   <h4 className="font-medium">Dirección</h4>
-                  <p className="text-gray-500">Av. Principal 1234, Ciudad</p>
+                  <p className="text-gray-500">G97J+G84, La Concepción, Provincia de Chiriquí</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -267,7 +267,7 @@ export default function Home() {
                 </span>
                 <div>
                   <h4 className="font-medium">Teléfono</h4>
-                  <p className="text-gray-500">+52 123 456 7890</p>
+                  <p className="text-gray-500">+507 770-4700</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -276,7 +276,7 @@ export default function Home() {
                 </span>
                 <div>
                   <h4 className="font-medium">Email</h4>
-                  <p className="text-gray-500">info@aquapump.com</p>
+                  <p className="text-gray-500">ventashidrotek@gmail.com</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -285,7 +285,7 @@ export default function Home() {
                 </span>
                 <div>
                   <h4 className="font-medium">Horario</h4>
-                  <p className="text-gray-500">Lun - Vie: 9:00 - 18:00</p>
+                  <p className="text-gray-500">Lun - Vie: 8:00a.m. - 5:00p.m.</p>
                 </div>
               </div>
             </div>

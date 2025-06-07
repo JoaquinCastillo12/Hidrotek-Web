@@ -28,16 +28,19 @@ export default function ProductsPage() {
   }, []);
 
   useEffect(() => {
-    const result = products.filter(p => {
-      return (
-        (!filters.categoria || p.categoria.toLowerCase() === filters.categoria.toLowerCase()) &&
-        (!filters.marca || p.marca.toLowerCase() === filters.marca.toLowerCase()) &&
-        (!filters.search || p.nombre.toLowerCase().includes(filters.search.toLowerCase()))
-      );
-    });
-    setFilteredProducts(result);
-  }, [filters, products]);
-
+  const result = products.filter(p => {
+    return (
+      (!filters.categoria || p.categoria.toLowerCase() === filters.categoria.toLowerCase()) &&
+      (!filters.marca || p.marca.toLowerCase() === filters.marca.toLowerCase()) &&
+      (
+        !filters.search ||
+        p.nombre.toLowerCase().includes(filters.search.toLowerCase()) ||
+        (p.descripcion && p.descripcion.toLowerCase().includes(filters.search.toLowerCase()))
+      )
+    );
+  });
+  setFilteredProducts(result);
+}, [filters, products]);
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };

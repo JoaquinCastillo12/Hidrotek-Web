@@ -1,7 +1,9 @@
+import { Icon } from "@iconify/react";
+
 export default function ProductCard({ product, onAddToCart }) {
   return (
-    <div className="bg-white border border-blue-100 rounded-lg p-4 shadow hover:shadow-xl transition">
-      <div className="w-full h-40 bg-white flex items-center justify-center mb-3">
+    <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden border border-blue-100 p-4 flex flex-col h-full">
+      <div className="w-full h-40 bg-blue-50 flex items-center justify-center mb-4 rounded-lg">
         <img
           src={product.imagen}
           alt={product.nombre}
@@ -9,13 +11,17 @@ export default function ProductCard({ product, onAddToCart }) {
         />
       </div>
       <h3 className="text-blue-800 font-semibold text-lg mb-1">{product.nombre}</h3>
-      <p className="text-blue-600 font-bold text-md mb-2">${product.precio}</p>
-      <button
-        onClick={() => onAddToCart(product)}
-        className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded shadow"
-      >
-        Agregar al carrito
-      </button>
+      <p className="text-gray-500 text-sm mb-3">{product.descripcion}</p>
+      <div className="flex items-center justify-between mt-auto">
+        <span className="text-blue-600 font-bold text-lg">${product.precio}</span>
+        <button
+          onClick={() => onAddToCart(product)}
+          className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow transition flex items-center justify-center"
+          title="Agregar al carrito"
+        >
+          <Icon icon="lucide:shopping-cart" className="text-xl" />
+        </button>
+      </div>
     </div>
   );
 }

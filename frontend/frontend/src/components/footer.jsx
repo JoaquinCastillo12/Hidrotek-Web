@@ -7,7 +7,7 @@ export default function footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Icon icon="lucide:droplets" className="text-blue-300 text-2xl" />
-              <span className="font-bold text-lg">AquaPump</span>
+              <span className="font-bold text-lg">Hidrotek</span>
             </div>
             <p className="text-blue-100 text-sm">
               Soluciones de bombeo de agua residencial de alta calidad para su hogar.

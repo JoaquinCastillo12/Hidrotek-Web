@@ -4,12 +4,19 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { Icon } from "@iconify/react";
 
+// Simulación: reemplaza esto por tu contexto real de carrito si tienes uno
+const useCart = () => {
+  // Ejemplo: cambia esto por el hook real de tu app
+  return { cartCount: 1 };
+};
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { authTokens, logoutUser } = useContext(AuthContext);
   const isAuthenticated = !!authTokens;
   const navigate = useNavigate();
   const location = useLocation();
+  const { cartCount } = useCart(); // Usa tu hook/contexto real de carrito aquí
 
   const handleLogout = () => {
     logoutUser();
@@ -53,9 +60,9 @@ export default function Header() {
             Productos
           </Link>
           <Link
-            to="/nosotros"
+            to="/about-us"
             className={
-              (isActive("/nosotros")
+              (isActive("/about-us")
                 ? "text-blue-700 font-semibold underline underline-offset-4 "
                 : "text-gray-700 hover:text-blue-700 ") +
               "transition"
@@ -64,9 +71,9 @@ export default function Header() {
             Nosotros
           </Link>
           <Link
-            to="/contacto"
+            to="/contact"
             className={
-              (isActive("/contacto")
+              (isActive("/contact")
                 ? "text-blue-700 font-semibold underline underline-offset-4 "
                 : "text-gray-700 hover:text-blue-700 ") +
               "transition"
@@ -76,8 +83,16 @@ export default function Header() {
           </Link>
         </nav>
 
-        {/* Botones de sesión a la derecha */}
-        <div className="hidden md:flex gap-2 items-center ml-4">
+        {/* Carrito y Botones de sesión a la derecha */}
+        <div className="hidden md:flex gap-4 items-center ml-4">
+          <Link to="/cart" className="relative flex items-center">
+            <Icon icon="lucide:shopping-cart" className="text-2xl text-blue-700" />
+            {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full px-2 py-0.5 font-bold">
+                {cartCount}
+              </span>
+            )}
+          </Link>
           {!isAuthenticated ? (
             <>
               <Link to="/login" className="bg-white text-blue-600 px-4 py-2 rounded-md font-medium shadow hover:bg-blue-50 transition">Iniciar Sesión</Link>
@@ -142,6 +157,15 @@ export default function Header() {
             }
           >
             Contacto
+          </Link>
+          <Link to="/cart" className="flex items-center gap-2">
+            <Icon icon="lucide:shopping-cart" className="text-xl" />
+            {cartCount > 0 && (
+              <span className="bg-blue-600 text-white text-xs rounded-full px-2 py-0.5 font-bold">
+                {cartCount}
+              </span>
+            )}
+            Carrito
           </Link>
           {!isAuthenticated ? (
             <>
