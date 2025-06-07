@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react";
+
 export default function Footer() {
   return (
        <footer className="w-full py-8 bg-blue-900 text-white mt-8">

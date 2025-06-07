@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Footer from '../components/footer';
 import { useNavigate } from "react-router-dom";
 
 
@@ -319,7 +319,7 @@ export default function Home() {
         </div>
       </section>
 <Footer />
-      {/* Puedes continuar adaptando las demás secciones (servicios, FAQ, contacto, footer) de la misma forma, usando solo HTML, Tailwind y los íconos de Iconify. */}
+    
     </div>
   );
 }
