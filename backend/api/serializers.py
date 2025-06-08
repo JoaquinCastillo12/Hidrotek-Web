@@ -95,7 +95,7 @@ class ProductoListSerializer(serializers.ModelSerializer):
 class ProductoCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
-        fields = ['nombre', 'descripcion', 'precio', 'stock', 'imagen']
+        fields = ['nombre', 'descripcion', 'precio', 'stock', 'imagen', 'marca', 'categoria']
         read_only_fields = ['id']
 
     def create(self, validated_data):
@@ -175,3 +175,20 @@ class DetalleCotizacionSerializer(serializers.ModelSerializer):
         detalle_cotizacion = DetalleCotizacion.objects.create(producto=producto, **validated_data)
         return detalle_cotizacion
     
+class MarcaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Marca
+        fields = ['id', 'nombre']
+        read_only_fields = ['id']
+
+    def create(self, validated_data):
+        return Marca.objects.create(**validated_data)
+    
+class CategoriaSerializer(serializers.ModelSerializer): 
+    class Meta:
+        model = Categoria
+        fields = ['id', 'nombre']
+        read_only_fields = ['id']
+
+    def create(self, validated_data):
+        return Categoria.objects.create(**validated_data)

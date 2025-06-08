@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 from .serializers import RegisterSerializer 
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .models import Producto 
-from .serializers import CustomTokenObtainPairSerializer, ProductoCreateSerializer, ProductoListSerializer, ProductoDetailSerializer, CotizacionUpdateSerializer
+from .models import Producto, Marca, Categoria 
+from .serializers import CustomTokenObtainPairSerializer, ProductoCreateSerializer, ProductoListSerializer, ProductoDetailSerializer, CotizacionUpdateSerializer, MarcaSerializer, CategoriaSerializer
 from rest_framework.response import Response
 from django.shortcuts import render
 
@@ -37,6 +37,25 @@ class ProductoDetailView(generics.RetrieveAPIView):
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)  
+
+class ProductoUpdateView(generics.UpdateAPIView):
+    queryset = Producto.objects.all()
+    serializer_class = CotizacionUpdateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        return Producto.objects.filter(user=self.request.user)
+    
+    def perform_update(self, serializer):
+        serializer.save()
+
+class ProductoCreateView(generics.CreateAPIView):
+    queryset = Producto.objects.all()
+    serializer_class = ProductoCreateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def perform_create(self, serializer):
+        serializer.save()
         
 class CotizacionCreateView(generics.CreateAPIView):
     queryset = Producto.objects.all()
@@ -68,4 +87,12 @@ class CotizacionUpdateView(generics.UpdateAPIView):
 def HomeView(request):
     return render(request, 'Prueba.html')
 
-
+class MarcaListView(generics.ListAPIView):
+    queryset = Marca.objects.all()
+    serializer_class = MarcaSerializer
+    permission_classes = [AllowAny]
+    
+class CategoriaListView(generics.ListAPIView):
+    queryset = Categoria.objects.all()
+    serializer_class = CategoriaSerializer
+    permission_classes = [AllowAny]
