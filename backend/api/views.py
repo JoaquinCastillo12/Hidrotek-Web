@@ -4,7 +4,7 @@ from .serializers import RegisterSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import Producto, Marca, Categoria 
-from .serializers import CustomTokenObtainPairSerializer, ProductoCreateSerializer, ProductoListSerializer, ProductoDetailSerializer, CotizacionUpdateSerializer, MarcaSerializer, CategoriaSerializer
+from .serializers import CustomTokenObtainPairSerializer, ProductoCreateSerializer, ProductoListSerializer, ProductoDetailSerializer, CotizacionUpdateSerializer, MarcaSerializer, CategoriaSerializer,ProductoUpdateSerializer
 from rest_framework.response import Response
 from django.shortcuts import render
 
@@ -40,7 +40,7 @@ class ProductoDetailView(generics.RetrieveAPIView):
 
 class ProductoUpdateView(generics.UpdateAPIView):
     queryset = Producto.objects.all()
-    serializer_class = CotizacionUpdateSerializer
+    serializer_class = ProductoUpdateSerializer
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
