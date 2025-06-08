@@ -43,11 +43,6 @@ class ProductoUpdateView(generics.UpdateAPIView):
     serializer_class = ProductoUpdateSerializer
     permission_classes = [permissions.IsAuthenticated]
     
-    def get_queryset(self):
-        return Producto.objects.filter(user=self.request.user)
-    
-    def perform_update(self, serializer):
-        serializer.save()
 
 class ProductoCreateView(generics.CreateAPIView):
     queryset = Producto.objects.all()
