@@ -96,23 +96,26 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               {
-                title: "Bombas Centrífugas",
-                description: "Ideales para aumentar la presión del agua en toda la casa",
-                icon: "lucide:gauge",
-                image: "https://img.heroui.chat/image/dashboard?w=400&h=300&u=waterpump2"
-              },
-              {
-                title: "Bombas Sumergibles",
-                description: "Perfectas para pozos y extracción de agua subterránea",
-                icon: "lucide:waves",
-                image: "https://img.heroui.chat/image/dashboard?w=400&h=300&u=waterpump3"
-              },
-              {
-                title: "Sistemas de Presión",
-                description: "Mantienen la presión constante en toda la instalación",
-                icon: "lucide:activity",
-                image: "https://img.heroui.chat/image/dashboard?w=400&h=300&u=waterpump4"
-              }
+  title: "Bombas Centrífugas",
+  description: "Ideales para aumentar la presión del agua en toda la casa",
+  icon: "lucide:gauge",
+  image: "public/IMAGEN DESTACADA 1.JPG",
+  categoria: "BOMBAS CENTRIFUGAS"
+},
+{
+  title: "Bombas Sumergibles",
+  description: "Perfectas para pozos y extracción de agua subterránea",
+  icon: "lucide:waves",
+  image: "public/IMAGEN DESTACADA 2.JPG",
+  categoria: "BOMBAS PARA POZO"
+},
+{
+  title: "Sistemas de Presión",
+  description: "Mantienen la presión constante en toda la instalación",
+  icon: "lucide:activity",
+  image: "public/IMAGEN DESTACADA 3.JPG",
+  categoria: "SISTEMAS HIDRONEUMATICOS"
+}
             ].map((item, index) => (
               <motion.div 
                 key={index}
@@ -123,10 +126,10 @@ export default function Home() {
               >
                 <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
                   <img
-                    alt={item.title}
-                    className="w-full h-48 object-cover"
-                    src={item.image}
-                  />
+  alt={item.title}
+  className="w-full h-60 md:h-56 lg:h-80 object-cover"
+  src={item.image}
+/>
                   <div className="p-5">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="bg-blue-100 p-2 rounded-full">
@@ -135,7 +138,7 @@ export default function Home() {
                       <h3 className="text-xl font-semibold">{item.title}</h3>
                     </div>
                     <p className="text-gray-500">{item.description}</p>
-                    <button className="mt-4 flex items-center gap-1 text-blue-600 hover:underline font-medium">
+                    <button className="mt-4 flex items-center gap-1 text-blue-600 hover:underline font-medium"onClick={() => navigate(`/products?categoria=${encodeURIComponent(item.categoria)}`)}>
                       Ver detalles
                       <Icon icon="lucide:chevron-right" />
                     </button>
@@ -175,9 +178,15 @@ export default function Home() {
                 <li>✓ Instalación certificada</li>
                 <li>✓ Pruebas de funcionamiento</li>
               </ul>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition">
-                Solicitar Instalación
-              </button>
+              <button
+  className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition"
+  onClick={() => {
+    const msg = encodeURIComponent("Hola, quiero solicitar una instalación de bomba de agua residencial.");
+    window.open(`https://wa.me/65258464?text=${msg}`, "_blank");
+  }}
+>
+  Solicitar Instalación
+</button>
             </div>
             <div className="bg-blue-50 p-8 rounded-xl shadow-md">
               <div className="flex items-center gap-4 mb-4">
@@ -197,9 +206,15 @@ export default function Home() {
                 <li>✓ Mantenimiento programado</li>
                 <li>✓ Repuestos originales</li>
               </ul>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition">
-                Agendar Servicio
-              </button>
+              <button
+  className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition"
+  onClick={() => {
+    const msg = encodeURIComponent("Hola, necesito agendar un servicio de mantenimiento o reparación.");
+    window.open(`https://wa.me/65258464?text=${msg}`, "_blank");
+  }}
+>
+  Agendar Servicio
+</button>
             </div>
           </div>
         </div>
@@ -258,7 +273,14 @@ export default function Home() {
                 </span>
                 <div>
                   <h4 className="font-medium">Dirección</h4>
-                  <p className="text-gray-500">G97J+G84, La Concepción, Provincia de Chiriquí</p>
+                   <a
+      href="https://maps.app.goo.gl/hqeKLbiRZSmM8UcE9"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-gray-500 hover:underline"
+    >
+      G97J+G84, La Concepción, Provincia de Chiriquí
+    </a>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -290,15 +312,21 @@ export default function Home() {
               </div>
             </div>
             <div className="flex gap-3">
-              <a href="#" className="bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition">
+              <a href="https://www.facebook.com/profile.php?id=100040970053594&locale=nb_NO" className="bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition">
                 <Icon icon="logos:facebook" className="text-xl" />
               </a>
-              <a href="#" className="bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition">
+              <a href="https://www.instagram.com/hidrotekpanama" className="bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition">
                 <Icon icon="lucide:instagram" className="text-xl" />
               </a>
-              <a href="#" className="bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition">
-                <Icon icon="lucide:message-circle" className="text-xl" />
-              </a>
+             <a
+    href="https://wa.me/65258464"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-green-100 p-2 rounded-full hover:bg-green-200 transition flex items-center"
+    title="WhatsApp"
+  >
+    <Icon icon="logos:whatsapp-icon" className="text-xl text-green-600" />
+  </a>
             </div>
           </div>
           <div className="flex-1 bg-blue-50 rounded-xl shadow-md p-6">

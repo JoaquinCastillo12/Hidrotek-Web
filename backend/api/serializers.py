@@ -5,6 +5,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Producto, Cotizacion, DetalleCotizacion, Marca, Categoria
 
 
+#Serializer de usuarios
+
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
@@ -64,6 +66,9 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
         
         return user
+    
+
+#Serializers de productos
 
     
 class ProductoDetailSerializer(serializers.ModelSerializer):
@@ -126,6 +131,8 @@ class ProductoDeleteSerializer(serializers.ModelSerializer):
         instance.delete()
         return instance
     
+#Serializers de cotizaciones
+    
 class CotizacionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cotizacion
@@ -134,6 +141,29 @@ class CotizacionSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Cotizacion.objects.create(**validated_data)
+    
+class CotizacionListSerializer(serializers.ModelSerializer):
+    cliente = serializers.StringRelatedField()
+
+    class Meta:
+        model = Cotizacion
+        fields = ['id', 'cliente', 'fecha', 'total']
+        read_only_fields = ['id', 'total']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['cliente'] = instance.cliente.username if instance.cliente else None
+        return representation
+
+class CotizacionCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cotizacion
+        fields = ['cliente', 'fecha']
+        read_only_fields = ['id', 'total']
+
+    def create(self, validated_data):
+        return Cotizacion.objects.create(**validated_data)
+    
     
 class CotizacionUpdateSerializer(serializers.ModelSerializer):
     class Meta:
@@ -147,19 +177,17 @@ class CotizacionUpdateSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
     
-class DetalleCotizacionUpdateSerializer(serializers.ModelSerializer):
+class CotizacionDeleteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = DetalleCotizacion
-        fields = ['producto', 'stock', 'precio_unitario']
-        read_only_fields = ['id', 'subtotal']
+        model = Cotizacion
+        fields = ['id']
+        read_only_fields = ['id']
 
-    def update(self, instance, validated_data):
-        instance.producto = validated_data.get('producto', instance.producto)
-        instance.stock = validated_data.get('stock', instance.stock)
-        instance.precio_unitario = validated_data.get('precio_unitario', instance.precio_unitario)
-        instance.subtotal = instance.stock * instance.precio_unitario
-        instance.save()
+    def delete(self, instance):
+        instance.delete()
         return instance
+    
+#Serializers de detalles de cotizaciones
     
 class DetalleCotizacionSerializer(serializers.ModelSerializer):
     producto = ProductoListSerializer()
@@ -174,6 +202,48 @@ class DetalleCotizacionSerializer(serializers.ModelSerializer):
         producto = Producto.objects.get(id=producto_data['id'])
         detalle_cotizacion = DetalleCotizacion.objects.create(producto=producto, **validated_data)
         return detalle_cotizacion
+
+class DetalleCotizacionCreateSerializer(serializers.ModelSerializer):
+    producto = ProductoListSerializer()
+
+    class Meta:
+        model = DetalleCotizacion
+        fields = ['cotizacion', 'producto', 'stock', 'precio_unitario']
+        read_only_fields = ['id', 'subtotal']
+
+    def create(self, validated_data):
+        producto_data = validated_data.pop('producto')
+        producto = Producto.objects.get(id=producto_data['id'])
+        detalle_cotizacion = DetalleCotizacion.objects.create(producto=producto, **validated_data)
+        detalle_cotizacion.subtotal = detalle_cotizacion.stock * detalle_cotizacion.precio_unitario
+        detalle_cotizacion.save()
+        return detalle_cotizacion
+    
+class DetalleCotizacionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetalleCotizacion
+        fields = ['producto', 'stock', 'precio_unitario']
+        read_only_fields = ['id', 'subtotal']
+
+    def update(self, instance, validated_data):
+        instance.producto = validated_data.get('producto', instance.producto)
+        instance.stock = validated_data.get('stock', instance.stock)
+        instance.precio_unitario = validated_data.get('precio_unitario', instance.precio_unitario)
+        instance.subtotal = instance.stock * instance.precio_unitario
+        instance.save()
+        return instance
+
+class DetalleCotizacionDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DetalleCotizacion
+        fields = ['id']
+        read_only_fields = ['id']
+
+    def delete(self, instance):
+        instance.delete()
+        return instance
+    
+#Serializers de marcas
     
 class MarcaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -183,6 +253,38 @@ class MarcaSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Marca.objects.create(**validated_data)
+
+class MarcaCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Marca
+        fields = ['nombre']
+        read_only_fields = ['id']
+
+    def create(self, validated_data):
+        return Marca.objects.create(**validated_data)
+    
+class MarcaUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Marca
+        fields = ['nombre']
+        read_only_fields = ['id']
+
+    def update(self, instance, validated_data):
+        instance.nombre = validated_data.get('nombre', instance.nombre)
+        instance.save()
+        return instance
+
+class MarcaDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Marca
+        fields = ['id']
+        read_only_fields = ['id']
+
+    def delete(self, instance):
+        instance.delete()
+        return instance
+    
+#Serializers de categorias
     
 class CategoriaSerializer(serializers.ModelSerializer): 
     class Meta:
@@ -192,3 +294,33 @@ class CategoriaSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Categoria.objects.create(**validated_data)
+    
+class CategoriaCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categoria
+        fields = ['nombre']
+        read_only_fields = ['id']
+
+    def create(self, validated_data):
+        return Categoria.objects.create(**validated_data)
+
+class CategoriaUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categoria
+        fields = ['nombre']
+        read_only_fields = ['id']
+
+    def update(self, instance, validated_data):
+        instance.nombre = validated_data.get('nombre', instance.nombre)
+        instance.save()
+        return instance
+    
+class CategoriaDeleteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Categoria
+        fields = ['id']
+        read_only_fields = ['id']
+
+    def delete(self, instance):
+        instance.delete()
+        return instance
