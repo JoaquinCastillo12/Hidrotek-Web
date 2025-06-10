@@ -33,7 +33,13 @@ export default function AboutUs() {
                 <li>✓ Instalación certificada</li>
                 <li>✓ Pruebas de funcionamiento</li>
               </ul>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition">
+              <button
+  className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition"
+  onClick={() => {
+    const msg = encodeURIComponent("Hola, quiero solicitar una instalación de bomba de agua residencial.");
+    window.open(`https://wa.me/65258464?text=${msg}`, "_blank");
+  }}
+>
                 Solicitar Instalación
               </button>
             </div>
@@ -52,7 +58,13 @@ export default function AboutUs() {
                 <li>✓ Instalación profesional</li>
                 <li>✓ Mantenimiento y soporte</li>
               </ul>
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition">
+              <button
+  className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium hover:bg-blue-700 transition"
+  onClick={() => {
+    const msg = encodeURIComponent("Hola, necesito agendar un servicio de mantenimiento o reparación.");
+    window.open(`https://wa.me/65258464?text=${msg}`, "_blank");
+  }}
+>
                 Agendar Servicio
               </button>
             </div>

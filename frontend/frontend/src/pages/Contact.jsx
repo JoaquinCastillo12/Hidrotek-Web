@@ -1,8 +1,33 @@
 import { Icon } from "@iconify/react";
+import React, { useState } from "react";
 import Header from '../components/Header';
 import Footer from '../components/footer';
 
 export default function Contact() {
+  const [form, setForm] = useState({
+    nombre: "",
+    apellido: "",
+    email: "",
+    telefono: "",
+    mensaje: "",
+  });
+  const [enviado, setEnviado] = useState(false);
+
+  const handleChange = e => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    await fetch("https://hidrotek.onrender.com/api/contact-email/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+    setEnviado(true);
+    setForm({ nombre: "", apellido: "", email: "", telefono: "", mensaje: "" });
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Header />
@@ -30,7 +55,14 @@ export default function Contact() {
                 </span>
                 <div>
                   <h4 className="font-medium">Teléfono</h4>
-                  <p className="text-gray-500">+507 770-4700</p>
+                  <a
+      href="https://maps.app.goo.gl/hqeKLbiRZSmM8UcE9"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-gray-500 hover:underline"
+    >
+      G97J+G84, La Concepción, Provincia de Chiriquí
+    </a>
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -53,30 +85,37 @@ export default function Contact() {
               </div>
             </div>
             <div className="flex gap-3">
-              <a href="#" className="bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition">
+              <a href="https://www.facebook.com/profile.php?id=100040970053594&locale=nb_NO" className="bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition">
                 <Icon icon="logos:facebook" className="text-xl" />
               </a>
-              <a href="#" className="bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition">
+              <a href="https://www.instagram.com/hidrotekpanama" className="bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition">
                 <Icon icon="lucide:instagram" className="text-xl" />
               </a>
-              <a href="#" className="bg-blue-100 p-2 rounded-full hover:bg-blue-200 transition">
-                <Icon icon="lucide:message-circle" className="text-xl" />
-              </a>
+             <a
+    href="https://wa.me/65258464"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-green-100 p-2 rounded-full hover:bg-green-200 transition flex items-center"
+    title="WhatsApp"
+  >
+    <Icon icon="logos:whatsapp-icon" className="text-xl text-green-600" />
+  </a>
             </div>
           </div>
           <div className="flex-1 bg-blue-50 rounded-xl shadow-md p-6">
             <h3 className="text-xl font-semibold mb-4">Envíenos un mensaje</h3>
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su nombre" />
-                <input className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su apellido" />
+                <input name="nombre" value={form.nombre} onChange={handleChange} className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su nombre" />
+                <input name="apellido" value={form.apellido} onChange={handleChange} className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su apellido" />
               </div>
-              <input className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="correo@ejemplo.com" type="email" />
-              <input className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su número telefónico" />
-              <textarea className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="¿Cómo podemos ayudarle?" rows={4} />
+              <input name="email" value={form.email} onChange={handleChange} className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="correo@ejemplo.com" type="email" />
+              <input name="telefono" value={form.telefono} onChange={handleChange} className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su número telefónico" />
+              <textarea name="mensaje" value={form.mensaje} onChange={handleChange} className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="¿Cómo podemos ayudarle?" rows={4} />
               <button className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium w-full hover:bg-blue-700 transition" type="submit">
                 Enviar Mensaje
               </button>
+              {enviado && <p className="text-green-600">¡Mensaje enviado correctamente!</p>}
             </form>
           </div>
         </div>

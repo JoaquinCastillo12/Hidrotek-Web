@@ -7,6 +7,10 @@ from .models import Producto, Marca, Categoria, Cotizacion, DetalleCotizacion
 from rest_framework import generics
 from rest_framework.response import Response
 from django.shortcuts import render
+from rest_framework.views import APIView
+from rest_framework import status
+from django.core.mail import send_mail
+from django.conf import settings
 
 from .serializers import (
     RegisterSerializer,
@@ -147,3 +151,30 @@ class CategoriaDeleteView(generics.DestroyAPIView):
     queryset = Categoria.objects.all()
     serializer_class = CategoriaDeleteSerializer
     permission_classes = [permissions.IsAdminUser]
+
+
+class ContactEmailView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        nombre = request.data.get('nombre')
+        apellido = request.data.get('apellido')
+        email = request.data.get('email')
+        telefono = request.data.get('telefono')
+        mensaje = request.data.get('mensaje')
+
+        cuerpo = f"""
+        Nombre: {nombre}
+        Apellido: {apellido}
+        Email: {email}
+        Teléfono: {telefono}
+        Mensaje: {mensaje}
+        """
+
+        send_mail(
+            subject="Nuevo mensaje de contacto",
+            message=cuerpo,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[settings.DEFAULT_FROM_EMAIL],  # Cambia por tu correo si quieres
+        )
+        return Response({"detail": "Mensaje enviado"}, status=status.HTTP_200_OK)
