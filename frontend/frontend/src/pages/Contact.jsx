@@ -19,7 +19,7 @@ export default function Contact() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    await fetch("https://hidrotek.onrender.com/api/contact-email/", {
+    await fetch("https://hidrotek.onrender.com/api/contact-message/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
@@ -46,15 +46,6 @@ export default function Contact() {
                 </span>
                 <div>
                   <h4 className="font-medium">Dirección</h4>
-                  <p className="text-gray-500">G97J+G84, La Concepción, Provincia de Chiriquí</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="bg-blue-100 p-2 rounded-full">
-                  <Icon icon="lucide:phone" className="text-blue-600 text-xl" />
-                </span>
-                <div>
-                  <h4 className="font-medium">Teléfono</h4>
                   <a
       href="https://maps.app.goo.gl/hqeKLbiRZSmM8UcE9"
       target="_blank"
@@ -63,6 +54,15 @@ export default function Contact() {
     >
       G97J+G84, La Concepción, Provincia de Chiriquí
     </a>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="bg-blue-100 p-2 rounded-full">
+                  <Icon icon="lucide:phone" className="text-blue-600 text-xl" />
+                </span>
+                <div>
+                  <h4 className="font-medium">Teléfono</h4>
+                  <p className="text-gray-500">770-4700</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">

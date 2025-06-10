@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import Producto, Cotizacion, DetalleCotizacion, Marca, Categoria
+from .models import Producto, Cotizacion, DetalleCotizacion, Marca, Categoria, ContactMessage
 
 
 #Serializer de usuarios
@@ -324,3 +324,8 @@ class CategoriaDeleteSerializer(serializers.ModelSerializer):
     def delete(self, instance):
         instance.delete()
         return instance
+
+class ContactMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ContactMessage
+        fields = '__all__'

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from .serializers import RegisterSerializer 
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .models import Producto, Marca, Categoria, Cotizacion, DetalleCotizacion
+from .models import Producto, Marca, Categoria, Cotizacion, DetalleCotizacion, ContactMessage
 from rest_framework import generics
 from rest_framework.response import Response
 from django.shortcuts import render
@@ -32,6 +32,8 @@ from .serializers import (
     CategoriaUpdateSerializer,
     CategoriaDeleteSerializer,
     CategoriaSerializer,
+    ContactMessageSerializer,
+    
     
 )
 
@@ -153,28 +155,11 @@ class CategoriaDeleteView(generics.DestroyAPIView):
     permission_classes = [permissions.IsAdminUser]
 
 
-class ContactEmailView(APIView):
-    permission_classes = [AllowAny]
+class ContactMessageCreateView(generics.CreateAPIView):
+    queryset = ContactMessage.objects.all()
+    serializer_class = ContactMessageSerializer
 
-    def post(self, request):
-        nombre = request.data.get('nombre')
-        apellido = request.data.get('apellido')
-        email = request.data.get('email')
-        telefono = request.data.get('telefono')
-        mensaje = request.data.get('mensaje')
-
-        cuerpo = f"""
-        Nombre: {nombre}
-        Apellido: {apellido}
-        Email: {email}
-        Teléfono: {telefono}
-        Mensaje: {mensaje}
-        """
-
-        send_mail(
-            subject="Nuevo mensaje de contacto",
-            message=cuerpo,
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[settings.DEFAULT_FROM_EMAIL],  # Cambia por tu correo si quieres
-        )
-        return Response({"detail": "Mensaje enviado"}, status=status.HTTP_200_OK)
+class ContactMessageListView(generics.ListAPIView):
+    queryset = ContactMessage.objects.all().order_by('-fecha')
+    serializer_class = ContactMessageSerializer
+    permission_classes = [permissions.IsAuthenticated]  
