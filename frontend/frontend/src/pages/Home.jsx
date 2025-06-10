@@ -99,21 +99,21 @@ export default function Home() {
   title: "Bombas Centrífugas",
   description: "Ideales para aumentar la presión del agua en toda la casa",
   icon: "lucide:gauge",
-  image: "https://drive.google.com/file/d/1DqgyySK9MNIAd7pECokHYxOPGLboWYo3/view?usp=drive_link",
+  image: "/IMAGEN DESTACADA 1.JPG",
   categoria: "BOMBAS CENTRIFUGAS"
 },
 {
   title: "Bombas Sumergibles",
   description: "Perfectas para pozos y extracción de agua subterránea",
   icon: "lucide:waves",
-  image: "https://drive.google.com/file/d/1xAYqLD_PSmGOAyPHT_I1jzP8LydvHXL1/view?usp=drive_link",
+  image: "/IMAGEN DESTACADA 2.JPG",
   categoria: "BOMBAS PARA POZO"
 },
 {
   title: "Sistemas de Presión",
   description: "Mantienen la presión constante en toda la instalación",
   icon: "lucide:activity",
-  image: "https://drive.google.com/file/d/1DjSEOGzHj0DGxamLL6YI8LQoMjH-75tC/view?usp=drive_link",
+  image: "/IMAGEN DESTACADA 3.JPG",
   categoria: "SISTEMAS HIDRONEUMATICOS"
 }
             ].map((item, index) => (
