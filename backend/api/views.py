@@ -156,7 +156,7 @@ class CotizacionPDFCreateView(APIView):
         if pisa_status.err:
             return Response({'error': 'Error al generar PDF'}, status=500)
 
-        # Devuelve el PDF como respuesta
+        # Devuelve el PDF como respuesta (inline para ver en navegador)
         response = HttpResponse(result.getvalue(), content_type='application/pdf')
         response['Content-Disposition'] = f'inline; filename="cotizacion_{cotizacion.id}.pdf"'
         return response
