@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cotización</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px;}
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left;}
+    th { background: #f0f0f0; }
+    tfoot td { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h2>Cotización #{{ cotizacion.id }}</h2>
+  <p>Cliente: {{ cotizacion.usuario }}</p>
+  <p>Fecha: {{ cotizacion.fecha }}</p>
+  <table>
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio Unitario</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+<tbody>
+  {% for d in detalles %}
+  {% with d.cantidad|floatformat:2 as cantidad %}
+  {% with d.precio_unitario|floatformat:2 as precio %}
+  <tr>
+    <td>{{ d.producto.nombre }}</td>
+    <td>{{ cantidad }}</td>
+    <td>${{ precio }}</td>
+    <td>${{ d.cantidad|floatformat:2|floatformat:0|add:"0"|floatformat:0 }}</td>
+  </tr>
+  {% endwith %}
+  {% endwith %}
+  {% endfor %}
+</tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3">Total</td>
+        <td>${{ cotizacion.total|floatformat:2 }}</td>
+      </tr>
+    </tfoot>
+  </table>

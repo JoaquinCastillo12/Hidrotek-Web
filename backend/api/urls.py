@@ -1,6 +1,6 @@
 # urls.py
 from django.urls import path
-from .views import RegisterView, LoginView, ProductoListView, ProductoDetailView, HomeView, ProductoUpdateView, ProductoCreateView, MarcaListView, CategoriaListView, ContactMessageCreateView, ContactMessageListView, ContactMessageCreateView, ContactMessageListView
+from .views import RegisterView, LoginView, ProductoListView, ProductoDetailView, HomeView, ProductoUpdateView, ProductoCreateView, MarcaListView, CategoriaListView, ContactMessageCreateView, ContactMessageListView, ContactMessageCreateView, CotizacionPDFCreateView 
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -14,5 +14,6 @@ urlpatterns = [
     path('categoria/', CategoriaListView.as_view(), name='categoria-list'),
     path('contact-message/', ContactMessageCreateView.as_view()),
     path('contact-messages/', ContactMessageListView.as_view()),
+    path('cotizacion-pdf/', CotizacionPDFCreateView.as_view(), name='cotizacion-pdf'),
     
 ]

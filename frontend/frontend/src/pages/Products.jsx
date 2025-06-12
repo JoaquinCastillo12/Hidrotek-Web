@@ -8,6 +8,7 @@ import SearchBar from '../components/SearchBar';
 import ProductList from '../components/ProductList';
 import Footer from '../components/footer';
 import axios from 'axios';
+import Cart from '../components/Cart';
 
 export default function ProductsPage() {
   const location = useLocation();
@@ -20,6 +21,8 @@ export default function ProductsPage() {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [marcas, setMarcas] = useState([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartItems, setCartItems] = useState([]);
 
   // Actualiza el filtro si cambia la URL (por ejemplo, al navegar desde el footer)
   useEffect(() => {
@@ -31,7 +34,7 @@ export default function ProductsPage() {
   }, [categoriaParam]);
 
   useEffect(() => {
-    axios.get('https://hidrotek.onrender.com/api/productos/')
+    axios.get('http://127.0.0.1:8000/api/productos/')
       .then(response => {
         setProducts(response.data);
         const uniqueCategorias = [...new Set(response.data.map(p => p.categoria))];
@@ -80,8 +83,60 @@ export default function ProductsPage() {
   };
 
   const handleAddToCart = product => {
-    alert(`Agregado: ${product.nombre}`);
+    setCartOpen(true);
+    setCartItems(prev => {
+      const found = prev.find(item => item.id === product.id);
+      if (found) {
+        return prev.map(item =>
+          item.id === product.id
+            ? { ...item, cantidad: item.cantidad + 1 }
+            : item
+        );
+      }
+      return [...prev, { ...product, cantidad: 1 }];
+    });
   };
+
+  const handleQuantityChange = (id, cantidad) => {
+    setCartItems(prev =>
+      prev.map(item =>
+        item.id === id ? { ...item, cantidad } : item
+      )
+    );
+  };
+
+  const handleRemove = id => {
+    setCartItems(prev => prev.filter(item => item.id !== id));
+  };
+
+  const handleCotizar = async () => {
+  const cotizacion = {
+    detalles: cartItems.map(item => ({
+      producto: item.id,
+      cantidad: item.cantidad,
+      precio_unitario: item.precio
+    }))
+  };
+
+  const token = localStorage.getItem("access"); // <-- CORRECTO
+
+  const res = await fetch("http://127.0.0.1:8000/api/cotizacion-pdf/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify(cotizacion)
+  });
+
+  if (res.ok) {
+    alert("¡Cotización enviada!");
+    setCartOpen(false);
+    setCartItems([]);
+  } else {
+    alert("Error al enviar la cotización");
+  }
+};
 
   return (
     <div className="bg-blue-50 min-h-screen flex flex-col">
@@ -102,10 +157,26 @@ export default function ProductsPage() {
             <Breadcrumbs items={["Inicio", "Productos"]} />
             <SearchBar onSearch={handleSearch} />
             <ProductList products={filteredProducts} onAddToCart={handleAddToCart} />
+            {/* Botón flotante para abrir el carrito */}
+            <button
+              className="fixed bottom-6 right-6 bg-blue-600 text-white rounded-full p-4 shadow-lg z-40 hover:bg-blue-700 transition"
+              onClick={() => setCartOpen(true)}
+              title="Ver carrito"
+            >
+              🛒
+            </button>
           </div>
         </div>
       </main>
       <Footer />
+      <Cart
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+        cartItems={cartItems}
+        onQuantityChange={handleQuantityChange}
+        onRemove={handleRemove}
+        onCotizar={handleCotizar}
+      />
     </div>
   );
 }

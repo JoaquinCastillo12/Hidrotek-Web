@@ -322,17 +322,17 @@ class CategoriaDeleteSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
     def delete(self, instance):
-        instance.delete()
-        return instance
+            instance.delete()
+            return instance
 
 class ContactMessageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ContactMessage
-        fields = '__all__'
-        
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        for key in ['nombre', 'apellido', 'email', 'telefono', 'mensaje']:
-            if data.get(key) is None:
-                data[key] = ""
-        return data
+        class Meta:
+            model = ContactMessage
+            fields = '__all__'
+            
+        def to_representation(self, instance):
+            data = super().to_representation(instance)
+            for key in ['nombre', 'apellido', 'email', 'telefono', 'mensaje','estado']:
+                if data.get(key) is None:
+                    data[key] = ""
+            return data

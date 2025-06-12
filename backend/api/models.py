@@ -28,7 +28,6 @@ class Producto(models.Model):
 
 class Cotizacion(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
-    cliente = models.CharField(max_length=200)
     correo = models.EmailField(blank=True, null=True)
     usuario = models.ForeignKey(User, on_delete=models.CASCADE)  
     total = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)  
@@ -52,3 +51,4 @@ class ContactMessage(models.Model):
     telefono = models.CharField(max_length=20)
     mensaje = models.TextField()
     fecha = models.DateTimeField(auto_now_add=True)
+    estado = models.BooleanField(default=False)

@@ -11,6 +11,10 @@ from rest_framework.views import APIView
 from rest_framework import status
 from django.core.mail import send_mail
 from django.conf import settings
+import pdfkit
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+
 
 from .serializers import (
     RegisterSerializer,
@@ -103,8 +107,52 @@ class CotizacionDeleteView(generics.DestroyAPIView):
 class CotizacionUpdateView(generics.UpdateAPIView):
     serializer_class = CotizacionUpdateSerializer
     permission_classes = [permissions.IsAdminUser]
-    
 
+class CotizacionPDFCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        detalles = request.data.get('detalles', [])
+        user = request.user
+
+        # Puedes usar el email del usuario autenticado
+        cotizacion = Cotizacion.objects.create(
+            usuario=user,
+            correo=user.email  # Así nunca será null
+        )
+
+        total = 0
+        detalle_objs = []
+        for det in detalles:
+            producto = Producto.objects.get(id=det['producto'])
+            cantidad = det['cantidad']
+            precio_unitario = det['precio_unitario']
+            subtotal = cantidad * float(precio_unitario)
+            total += subtotal
+            detalle = DetalleCotizacion.objects.create(
+                cotizacion=cotizacion,
+                producto=producto,
+                cantidad=cantidad,
+                precio_unitario=precio_unitario
+            )
+            detalle_objs.append({
+                "producto": producto.nombre,
+                "cantidad": cantidad,
+                "precio_unitario": precio_unitario,
+                "subtotal": subtotal
+            })
+        cotizacion.total = total
+        cotizacion.save()
+
+        # Puedes retornar los datos de la cotización creada
+        return Response({
+            "cotizacion_id": cotizacion.id,
+            "usuario": user.username,
+            "correo": cotizacion.correo,
+            "total": cotizacion.total,
+            "fecha": cotizacion.fecha,
+            "detalles": detalle_objs
+        }, status=status.HTTP_201_CREATED)
 #Prueba de vista
     
 def HomeView(request):
