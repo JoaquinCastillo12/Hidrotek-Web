@@ -11,9 +11,10 @@ from rest_framework.views import APIView
 from rest_framework import status
 from django.core.mail import send_mail
 from django.conf import settings
-import pdfkit
 from django.template.loader import render_to_string
 from django.http import HttpResponse
+from xhtml2pdf import pisa
+from io import BytesIO
 
 
 from .serializers import (
@@ -115,44 +116,50 @@ class CotizacionPDFCreateView(APIView):
         detalles = request.data.get('detalles', [])
         user = request.user
 
-        # Puedes usar el email del usuario autenticado
         cotizacion = Cotizacion.objects.create(
             usuario=user,
-            correo=user.email  # Así nunca será null
+            correo=user.email
         )
 
         total = 0
-        detalle_objs = []
+        detalles_objs = []
         for det in detalles:
             producto = Producto.objects.get(id=det['producto'])
             cantidad = det['cantidad']
             precio_unitario = det['precio_unitario']
             subtotal = cantidad * float(precio_unitario)
             total += subtotal
-            detalle = DetalleCotizacion.objects.create(
+            DetalleCotizacion.objects.create(
                 cotizacion=cotizacion,
                 producto=producto,
                 cantidad=cantidad,
                 precio_unitario=precio_unitario
             )
-            detalle_objs.append({
-                "producto": producto.nombre,
-                "cantidad": cantidad,
-                "precio_unitario": precio_unitario,
-                "subtotal": subtotal
+            detalles_objs.append({
+                'producto': producto,
+                'cantidad': cantidad,
+                'precio_unitario': precio_unitario,
+                'subtotal': subtotal
             })
         cotizacion.total = total
         cotizacion.save()
 
-        # Puedes retornar los datos de la cotización creada
-        return Response({
-            "cotizacion_id": cotizacion.id,
-            "usuario": user.username,
-            "correo": cotizacion.correo,
-            "total": cotizacion.total,
-            "fecha": cotizacion.fecha,
-            "detalles": detalle_objs
-        }, status=status.HTTP_201_CREATED)
+        # Renderiza la plantilla HTML con los datos
+        html = render_to_string('cotizacion_pdf.html', {
+            'cotizacion': cotizacion,
+            'detalles': detalles_objs
+        })
+
+        # Genera el PDF usando xhtml2pdf
+        result = BytesIO()
+        pisa_status = pisa.CreatePDF(html, dest=result)
+        if pisa_status.err:
+            return Response({'error': 'Error al generar PDF'}, status=500)
+
+        # Devuelve el PDF como respuesta
+        response = HttpResponse(result.getvalue(), content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="cotizacion_{cotizacion.id}.pdf"'
+        return response
 #Prueba de vista
     
 def HomeView(request):
@@ -210,4 +217,4 @@ class ContactMessageCreateView(generics.CreateAPIView):
 class ContactMessageListView(generics.ListAPIView):
     queryset = ContactMessage.objects.all().order_by('-fecha')
     serializer_class = ContactMessageSerializer
-    permission_classes = [permissions.IsAuthenticated]  
+    permission_classes = [permissions.IsAuthenticated]

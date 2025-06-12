@@ -28,12 +28,12 @@
   {% for d in detalles %}
   {% with d.cantidad|floatformat:2 as cantidad %}
   {% with d.precio_unitario|floatformat:2 as precio %}
-  <tr>
-    <td>{{ d.producto.nombre }}</td>
-    <td>{{ cantidad }}</td>
-    <td>${{ precio }}</td>
-    <td>${{ d.cantidad|floatformat:2|floatformat:0|add:"0"|floatformat:0 }}</td>
-  </tr>
+ <tr>
+  <td>{{ d.producto.nombre }}</td>
+  <td>{{ d.cantidad }}</td>
+  <td>${{ d.precio_unitario|floatformat:2 }}</td>
+  <td>${{ d.subtotal|floatformat:2 }}</td>
+</tr>
   {% endwith %}
   {% endwith %}
   {% endfor %}

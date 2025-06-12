@@ -110,33 +110,38 @@ export default function ProductsPage() {
   };
 
   const handleCotizar = async () => {
-  const cotizacion = {
-    detalles: cartItems.map(item => ({
-      producto: item.id,
-      cantidad: item.cantidad,
-      precio_unitario: item.precio
-    }))
+    const cotizacion = {
+      detalles: cartItems.map(item => ({
+        producto: item.id,
+        cantidad: item.cantidad,
+        precio_unitario: item.precio
+      }))
+    };
+
+    const token = localStorage.getItem("access"); // <-- CORRECTO
+
+    const res = await fetch("http://127.0.0.1:8000/api/cotizacion-pdf/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(cotizacion)
+    })
+    .then(res => res.blob())
+.then(blob => {
+  const url = window.URL.createObjectURL(blob);
+  window.open(url, '_blank');
+});
+
+    if (res.ok) {
+      alert("¡Cotización enviada!");
+      setCartOpen(false);
+      setCartItems([]);
+    } else {
+      alert("Error al enviar la cotización");
+    }
   };
-
-  const token = localStorage.getItem("access"); // <-- CORRECTO
-
-  const res = await fetch("http://127.0.0.1:8000/api/cotizacion-pdf/", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    body: JSON.stringify(cotizacion)
-  });
-
-  if (res.ok) {
-    alert("¡Cotización enviada!");
-    setCartOpen(false);
-    setCartItems([]);
-  } else {
-    alert("Error al enviar la cotización");
-  }
-};
 
   return (
     <div className="bg-blue-50 min-h-screen flex flex-col">
