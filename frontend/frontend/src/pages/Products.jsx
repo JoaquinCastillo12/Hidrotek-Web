@@ -118,28 +118,38 @@ export default function ProductsPage() {
       }))
     };
 
-    const token = localStorage.getItem("access"); // <-- CORRECTO
+    const token = localStorage.getItem("access");
 
-    const res = await fetch("https://hidrotek.onrender.com/api/cotizacion-pdf/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify(cotizacion)
-    })
-    .then(res => res.blob())
-.then(blob => {
-  const url = window.URL.createObjectURL(blob);
-  window.open(url, '_blank');
-});
+    try {
+      const res = await fetch("https://hidrotek.onrender.com/api/cotizacion-pdf/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(cotizacion)
+      });
 
-    if (res.ok) {
-      alert("¡Cotización enviada!");
-      setCartOpen(false);
-      setCartItems([]);
-    } else {
-      alert("Error al enviar la cotización");
+      if (res.status === 401) {
+        // El interceptor ya habrá eliminado el token y actualizado el contexto
+        alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+        setCartOpen(false);
+        setCartItems([]);
+        return;
+      }
+
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        alert("¡Cotización enviada!");
+        setCartOpen(false);
+        setCartItems([]);
+      } else {
+        alert("Error al enviar la cotización");
+      }
+    } catch (error) {
+      alert("Error de red al enviar la cotización");
     }
   };
 
