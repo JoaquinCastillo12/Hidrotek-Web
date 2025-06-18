@@ -1,5 +1,7 @@
+
 # urls.py
 from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView
 from .views import RegisterView, LoginView, ProductoListView, ProductoDetailView, HomeView, ProductoUpdateView, ProductoCreateView, MarcaListView, CategoriaListView, ContactMessageCreateView, ContactMessageListView, ContactMessageCreateView, CotizacionPDFCreateView 
 
 urlpatterns = [
@@ -15,5 +17,5 @@ urlpatterns = [
     path('contact-message/', ContactMessageCreateView.as_view()),
     path('contact-messages/', ContactMessageListView.as_view()),
     path('cotizacion-pdf/', CotizacionPDFCreateView.as_view(), name='cotizacion-pdf'),
-    
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
