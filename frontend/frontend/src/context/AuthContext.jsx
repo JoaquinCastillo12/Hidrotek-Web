@@ -10,34 +10,32 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => localStorage.getItem('user'));
   const [lastActivity, setLastActivity] = useState(Date.now());
 
-  // Guarda tokens en localStorage
+  // Guardar en localStorage
   useEffect(() => {
-    if (authTokens) localStorage.setItem('access', authTokens);
-    else localStorage.removeItem('access');
+    authTokens ? localStorage.setItem('access', authTokens) : localStorage.removeItem('access');
   }, [authTokens]);
 
   useEffect(() => {
-    if (refreshToken) localStorage.setItem('refresh', refreshToken);
-    else localStorage.removeItem('refresh');
+    refreshToken ? localStorage.setItem('refresh', refreshToken) : localStorage.removeItem('refresh');
   }, [refreshToken]);
 
   useEffect(() => {
-    if (user) localStorage.setItem('user', user);
-    else localStorage.removeItem('user');
+    user ? localStorage.setItem('user', user) : localStorage.removeItem('user');
   }, [user]);
 
   // Detectar actividad del usuario
   useEffect(() => {
     const updateActivity = () => setLastActivity(Date.now());
-    window.addEventListener('click', updateActivity);
-    window.addEventListener('keydown', updateActivity);
+
     window.addEventListener('mousemove', updateActivity);
+    window.addEventListener('keydown', updateActivity);
+    window.addEventListener('click', updateActivity);
     window.addEventListener('scroll', updateActivity);
 
     return () => {
-      window.removeEventListener('click', updateActivity);
-      window.removeEventListener('keydown', updateActivity);
       window.removeEventListener('mousemove', updateActivity);
+      window.removeEventListener('keydown', updateActivity);
+      window.removeEventListener('click', updateActivity);
       window.removeEventListener('scroll', updateActivity);
     };
   }, []);
@@ -51,31 +49,30 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
   }, []);
 
-  // Refrescar token si está por expirar y el usuario está activo
+  // Refrescar el token automáticamente si está activo
   useEffect(() => {
     const interval = setInterval(() => {
       if (!authTokens || !refreshToken) return;
 
       try {
-        const { exp } = jwt_decode(authTokens);
+        const { exp } = jwtDecode(authTokens);
         const now = Date.now() / 1000;
+        const expiresIn = exp - now;
+        const inactiveSeconds = (Date.now() - lastActivity) / 1000;
 
-        const secondsToExpire = exp - now;
-        const inactiveTime = (Date.now() - lastActivity) / 1000;
-
-        // Si el token expira en menos de 60s y el usuario ha estado activo
-        if (secondsToExpire < 60 && inactiveTime < 300) {
+        // Si lleva inactivo más de 5 minutos (300s)
+        if (inactiveSeconds >= 300) {
+          logoutUser();
+        } else if (expiresIn < 60) {
+          // Refrescar si faltan menos de 60s y está activo
           api
-            .post('token/refresh/', { refresh: refreshToken })
-            .then((res) => {
+            .post('api/token/refresh/', { refresh: refreshToken })
+            .then(res => {
               setAuthTokens(res.data.access);
             })
             .catch(() => {
               logoutUser();
             });
-        } else if (inactiveTime >= 300) {
-          // 5 minutos de inactividad
-          logoutUser();
         }
       } catch (err) {
         logoutUser();
@@ -87,13 +84,13 @@ export const AuthProvider = ({ children }) => {
 
   const loginUser = async (username, password) => {
     try {
-      const response = await api.post('login/', { username, password });
-      setAuthTokens(response.data.access);
-      setRefreshToken(response.data.refresh);
+      const res = await api.post('login/', { username, password });
+      setAuthTokens(res.data.access);
+      setRefreshToken(res.data.refresh);
       setUser(username);
       setLastActivity(Date.now());
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   };
@@ -104,4 +101,5 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
+
 
