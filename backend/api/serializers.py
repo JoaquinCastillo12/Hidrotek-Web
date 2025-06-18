@@ -74,7 +74,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 class ProductoDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
-        fields = ['id', 'nombre', 'descripcion', 'precio', 'stock', 'imagen']
+        fields = ['id', 'nombre', 'descripcion', 'precio', 'stock', 'imagen' ]
         read_only_fields = ['id']
 
     def to_representation(self, instance):
@@ -85,17 +85,32 @@ class ProductoDetailSerializer(serializers.ModelSerializer):
 class ProductoListSerializer(serializers.ModelSerializer):
     marca = serializers.StringRelatedField()
     categoria = serializers.StringRelatedField()
+    imagen_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Producto
-        fields = ['id', 'nombre', 'descripcion', 'precio', 'marca', 'categoria', 'stock', 'imagen']
+        fields = [
+            'id', 'nombre', 'descripcion', 'precio',
+            'marca', 'categoria', 'stock',
+            'imagen', 'ficha_tecnica', 'imagen_url'
+        ]
         read_only_fields = ['id']
 
+    def get_imagen_url(self, obj):
+        # Si tiene imagen subida a Cloudinary, usa esa
+        if obj.imagen:
+            return obj.imagen.url
+        # Si tiene una URL directa guardada en un campo adicional
+        if hasattr(obj, 'imagen_url') and obj.imagen_url:
+            return obj.imagen_url
+        return None
 
     def to_representation(self, instance):
-        representation = super().to_representation(instance)
-        representation['imagen'] = instance.imagen.url if instance.imagen else None
-        return representation
+        rep = super().to_representation(instance)
+        # Por claridad, puedes eliminar el campo 'imagen' si no quieres usarlo en el frontend
+        rep['imagen'] = self.get_imagen_url(instance)
+        return rep
+
     
 class ProductoCreateSerializer(serializers.ModelSerializer):
     class Meta:
