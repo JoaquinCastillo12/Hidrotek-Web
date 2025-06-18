@@ -21,53 +21,54 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="w-full py-12 md:py-24 bg-dots">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
-          <motion.div 
-            className="flex-1 mb-8 md:mb-0 md:pr-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
-              Bombas de Agua <span className="text-blue-600">Residenciales</span> de Alta Calidad
-            </h1>
-            <p className="text-gray-600 text-lg mb-6">
-              Soluciones confiables para el suministro de agua en su hogar. Eficiencia energética y durabilidad garantizada.
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <button
-                className="bg-blue-600 text-white px-6 py-3 rounded-md font-medium flex items-center gap-2 hover:bg-blue-700 transition"
-                onClick={() => navigate('/products')}
-              >
-                Ver Catálogo
-                <Icon icon="lucide:arrow-right" />
-              </button>
-              <a
-                href={whatsappURL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="border border-blue-600 text-blue-600 px-6 py-3 rounded-md font-medium flex items-center gap-2 hover:bg-blue-50 transition"
-              >
-                <Icon icon="lucide:phone" />
-                Contactar Asesor
-              </a>
-            </div>
-          </motion.div>
-          <motion.div 
-            className="flex-1"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <img
-              alt="Bomba de agua residencial"
-              src="https://img.heroui.chat/image/dashboard?w=600&h=400&u=waterpump1"
-              className="object-cover rounded-xl shadow-lg w-full max-w-lg"
-              width={600}
-            />
-          </motion.div>
-        </div>
-      </section>
+  <div className="container mx-auto px-4 flex flex-col md:flex-row items-center">
+    <motion.div 
+      className="flex-1 mb-8 md:mb-0 md:pr-8"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+    >
+      <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+        Bombas de Agua <span className="text-blue-600">Residenciales</span> de Alta Calidad
+      </h1>
+      <p className="text-gray-600 text-lg mb-6">
+        Soluciones confiables para el suministro de agua en su hogar. Eficiencia energética y durabilidad garantizada.
+      </p>
+      <div className="flex flex-wrap gap-3">
+        <button
+          className="bg-blue-600 text-white px-6 py-3 rounded-md font-medium flex items-center gap-2 hover:bg-blue-700 transition"
+          onClick={() => navigate('/products')}
+        >
+          Ver Catálogo
+          <Icon icon="lucide:arrow-right" />
+        </button>
+        <a
+          href={whatsappURL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="border border-blue-600 text-blue-600 px-6 py-3 rounded-md font-medium flex items-center gap-2 hover:bg-blue-50 transition"
+        >
+          <Icon icon="lucide:phone" />
+          Contactar Asesor
+        </a>
+      </div>
+    </motion.div>
+    <motion.div 
+      className="flex-1"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+    >
+      <img
+        alt="Bomba de agua residencial"
+        src="/IMAGEN PRINCIPAL HERO.jpg"
+        className="object-cover rounded-xl shadow-lg w-full max-w-lg"
+        width={600}
+      />
+    </motion.div>
+  </div>
+</section>
+
 
       {/* Features Section */}
       <section className="w-full py-16 bg-gray-50" id="productos">
