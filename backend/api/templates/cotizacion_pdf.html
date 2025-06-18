@@ -1,44 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>Cotización</title>
+  <meta charset="UTF-8">
   <style>
-    body { font-family: Arial, sans-serif; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px;}
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: left;}
-    th { background: #f0f0f0; }
-    tfoot td { font-weight: bold; }
+    body { font-family: Arial, sans-serif; font-size: 12px; margin: 40px; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+    th { background-color: #f0f0f0; }
+    h2, h4 { margin: 5px 0; }
+    .totales td { text-align: right; }
+    .text-right { text-align: right; }
+    .no-border td { border: none; }
   </style>
 </head>
 <body>
-  <h2>Cotización #{{ cotizacion.id }}</h2>
-  <p>Cliente: {{ cotizacion.usuario }}</p>
-  <p>Fecha: {{ cotizacion.fecha }}</p>
-  <table>
-  <thead>
-    <tr>
-      <th>Producto</th>
-      <th>Cantidad</th>
-      <th>Precio Unitario</th>
-      <th>Subtotal</th>
-      <th>ITBMS (7%)</th>
-      <th>Total con ITBMS</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for d in detalles %}
-    <tr>
-      <td>{{ d.producto.nombre }}</td>
-      <td>{{ d.cantidad }}</td>
-      <td>${{ d.precio_unitario }}</td>
-      <td>${{ d.subtotal|floatformat:2 }}</td>
-      <td>${{ d.itbms|floatformat:2 }}</td>
-      <td>${{ d.subtotal_con_itbms|floatformat:2 }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
 
-<p><strong>ITBMS Total:</strong> ${{ itbms_total|floatformat:2 }}</p>
-<p><strong>Total con ITBMS:</strong> ${{ total_con_itbms|floatformat:2 }}</p>
+  <!-- Encabezado de empresa -->
+  <h2>SOLUCIONES Y SERVICIOS TÉCNICOS CHIRIQUÍ, S.A.</h2>
+  <p>
+    RUC: 155641485-2-2016 DV:23<br>
+    Dirección: Vía Interamericana<br>
+    Teléfono: +507-7704700 | Celular: 6525-8464<br>
+    Email: ventashidrotek@gmail.com
+  </p>
+
+  <hr>
+
+  <!-- Información del cliente y cotización -->
+  <table class="no-border">
+    <tr>
+      <td><strong>Cliente:</strong> {{ cotizacion.usuario.get_full_name }}</td>
+      <td><strong>Correo:</strong> {{ cotizacion.correo }}</td>
+    </tr>
+    <tr>
+      <td><strong>Fecha:</strong> {{ cotizacion.fecha|date:"d/m/Y H:i" }}</td>
+      <td><strong>ID Cotización:</strong> {{ cotizacion.id }}</td>
+    </tr>
+  </table>
+
+  <!-- Detalles de productos -->
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Descripción</th>
+        <th>Cantidad</th>
+        <th>Precio Unitario</th>
+        <th>Subtotal</th>
+        <th>ITBMS (7%)</th>
+        <th>Total con ITBMS</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in detalles %}
+      <tr>
+        <td>{{ forloop.counter }}</td>
+        <td>{{ d.producto.nombre }}</td>
+        <td>{{ d.cantidad }}</td>
+        <td>${{ d.precio_unitario|floatformat:2 }}</td>
+        <td>${{ d.subtotal|floatformat:2 }}</td>
+        <td>${{ d.itbms|floatformat:2 }}</td>
+        <td>${{ d.subtotal_con_itbms|floatformat:2 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Totales -->
+  <table class="totales">
+    <tr>
+      <td><strong>Subtotal:</strong></td>
+      <td>${{ cotizacion.total|floatformat:2|floatformat:2 }}</td>
+    </tr>
+    <tr>
+      <td><strong>ITBMS Total (7%):</strong></td>
+      <td>${{ itbms_total|floatformat:2 }}</td>
+    </tr>
+    <tr>
+      <td><strong>Total con ITBMS:</strong></td>
+      <td><strong>${{ total_con_itbms|floatformat:2 }}</strong></td>
+    </tr>
+  </table>
+
+  <p class="text-right">Gracias por su preferencia.</p>
+</body>
+</html>
+
