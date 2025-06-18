@@ -110,6 +110,8 @@ class CotizacionUpdateView(generics.UpdateAPIView):
     serializer_class = CotizacionUpdateSerializer
     permission_classes = [permissions.IsAdminUser]
 
+from decimal import Decimal
+
 class CotizacionPDFCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -122,45 +124,56 @@ class CotizacionPDFCreateView(APIView):
             correo=user.email
         )
 
-        total = 0
+        total = Decimal('0.00')
+        itbms_total = Decimal('0.00')
         detalles_objs = []
+
         for det in detalles:
             producto = Producto.objects.get(id=det['producto'])
-            cantidad = det['cantidad']
-            precio_unitario = det['precio_unitario']
-            subtotal = cantidad * float(precio_unitario)
-            total += subtotal
+            cantidad = int(det['cantidad'])
+            precio_unitario = Decimal(str(det['precio_unitario']))
+            subtotal = cantidad * precio_unitario
+            itbms = subtotal * Decimal('0.07')
+            subtotal_con_itbms = subtotal + itbms
+
+            total += subtotal_con_itbms
+            itbms_total += itbms
+
             DetalleCotizacion.objects.create(
                 cotizacion=cotizacion,
                 producto=producto,
                 cantidad=cantidad,
                 precio_unitario=precio_unitario
             )
+
             detalles_objs.append({
                 'producto': producto,
                 'cantidad': cantidad,
                 'precio_unitario': precio_unitario,
-                'subtotal': subtotal
+                'subtotal': subtotal,
+                'itbms': itbms,
+                'subtotal_con_itbms': subtotal_con_itbms
             })
+
         cotizacion.total = total
         cotizacion.save()
 
-        # Renderiza la plantilla HTML con los datos
         html = render_to_string('cotizacion_pdf.html', {
             'cotizacion': cotizacion,
-            'detalles': detalles_objs
+            'detalles': detalles_objs,
+            'itbms_total': itbms_total,
+            'total_con_itbms': total
         })
 
-        # Genera el PDF usando xhtml2pdf
         result = BytesIO()
         pisa_status = pisa.CreatePDF(html, dest=result)
         if pisa_status.err:
             return Response({'error': 'Error al generar PDF'}, status=500)
 
-        # Devuelve el PDF como respuesta (inline para ver en navegador)
         response = HttpResponse(result.getvalue(), content_type='application/pdf')
         response['Content-Disposition'] = f'inline; filename="cotizacion_{cotizacion.id}.pdf"'
         return response
+
 #Prueba de vista
     
 def HomeView(request):

@@ -16,32 +16,29 @@
   <p>Cliente: {{ cotizacion.usuario }}</p>
   <p>Fecha: {{ cotizacion.fecha }}</p>
   <table>
-    <thead>
-      <tr>
-        <th>Producto</th>
-        <th>Cantidad</th>
-        <th>Precio Unitario</th>
-        <th>Subtotal</th>
-      </tr>
-    </thead>
-<tbody>
-  {% for d in detalles %}
-  {% with d.cantidad|floatformat:2 as cantidad %}
-  {% with d.precio_unitario|floatformat:2 as precio %}
- <tr>
-  <td>{{ d.producto.nombre }}</td>
-  <td>{{ d.cantidad }}</td>
-  <td>${{ d.precio_unitario|floatformat:2 }}</td>
-  <td>${{ d.subtotal|floatformat:2 }}</td>
-</tr>
-  {% endwith %}
-  {% endwith %}
-  {% endfor %}
-</tbody>
-    <tfoot>
-      <tr>
-        <td colspan="3">Total</td>
-        <td>${{ cotizacion.total|floatformat:2 }}</td>
-      </tr>
-    </tfoot>
-  </table>
+  <thead>
+    <tr>
+      <th>Producto</th>
+      <th>Cantidad</th>
+      <th>Precio Unitario</th>
+      <th>Subtotal</th>
+      <th>ITBMS (7%)</th>
+      <th>Total con ITBMS</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for d in detalles %}
+    <tr>
+      <td>{{ d.producto.nombre }}</td>
+      <td>{{ d.cantidad }}</td>
+      <td>${{ d.precio_unitario }}</td>
+      <td>${{ d.subtotal|floatformat:2 }}</td>
+      <td>${{ d.itbms|floatformat:2 }}</td>
+      <td>${{ d.subtotal_con_itbms|floatformat:2 }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p><strong>ITBMS Total:</strong> ${{ itbms_total|floatformat:2 }}</p>
+<p><strong>Total con ITBMS:</strong> ${{ total_con_itbms|floatformat:2 }}</p>
