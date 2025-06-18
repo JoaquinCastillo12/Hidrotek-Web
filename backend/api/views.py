@@ -15,6 +15,10 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse
 from xhtml2pdf import pisa
 from io import BytesIO
+import os
+from django.conf import settings
+from django.contrib.staticfiles import finders
+
 
 
 from .serializers import (
@@ -112,6 +116,16 @@ class CotizacionUpdateView(generics.UpdateAPIView):
 
 from decimal import Decimal
 
+def link_callback(uri, rel):
+    result = finders.find(uri)
+    if result:
+        return result
+    if uri.startswith(settings.STATIC_URL):
+        path = uri.replace(settings.STATIC_URL, "")
+        return os.path.join(settings.STATIC_ROOT, path)
+    return uri
+
+
 class CotizacionPDFCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -166,7 +180,8 @@ class CotizacionPDFCreateView(APIView):
         })
 
         result = BytesIO()
-        pisa_status = pisa.CreatePDF(html, dest=result)
+        pisa_status = pisa.CreatePDF(html, dest=result, link_callback=link_callback)
+
         if pisa_status.err:
             return Response({'error': 'Error al generar PDF'}, status=500)
 
