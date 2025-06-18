@@ -117,12 +117,14 @@ class CotizacionUpdateView(generics.UpdateAPIView):
 from decimal import Decimal
 
 def link_callback(uri, rel):
-    result = finders.find(uri)
-    if result:
-        return result
     if uri.startswith(settings.STATIC_URL):
         path = uri.replace(settings.STATIC_URL, "")
-        return os.path.join(settings.STATIC_ROOT, path)
+        absolute_path = finders.find(path)
+        if absolute_path:
+            return absolute_path
+        else:
+            # Último intento si 'find' falla
+            return os.path.join(settings.STATIC_ROOT, path)
     return uri
 
 
@@ -179,6 +181,7 @@ class CotizacionPDFCreateView(APIView):
             'total_con_itbms': total
         })
 
+        print(html)
         result = BytesIO()
         pisa_status = pisa.CreatePDF(html, dest=result, link_callback=link_callback)
 
