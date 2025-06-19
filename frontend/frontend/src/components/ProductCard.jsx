@@ -1,4 +1,5 @@
 import { Icon } from "@iconify/react";
+import { Link } from "react-router-dom";
 
 export default function ProductCard({ product, onAddToCart }) {
   const imagenSrc = product.imagen || product.imagen_url || "/no-image.png";
@@ -12,7 +13,14 @@ export default function ProductCard({ product, onAddToCart }) {
           className="max-h-full max-w-full object-contain"
         />
       </div>
-      <h3 className="text-blue-800 font-semibold text-lg mb-1">{product.nombre}</h3>
+
+      {/* ✅ Nombre como enlace */}
+      <Link to={`/products/${product.id}`}>
+        <h3 className="text-blue-800 font-semibold text-lg mb-1 hover:underline cursor-pointer">
+          {product.nombre}
+        </h3>
+      </Link>
+
       <p className="text-gray-500 text-sm mb-3">{product.descripcion}</p>
       <div className="flex items-center justify-between mt-auto">
         <span className="text-blue-600 font-bold text-lg">${product.precio}</span>
@@ -27,4 +35,5 @@ export default function ProductCard({ product, onAddToCart }) {
     </div>
   );
 }
+
 

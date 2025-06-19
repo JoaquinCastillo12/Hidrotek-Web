@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Products from './pages/Products';
 import Contact from './pages/Contact';
 import AboutUs from './pages/AboutUs';
+import DetailPage from './pages/DetailPage';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path="/products" element={<Products />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/about-us" element={<AboutUs />} />
+      <Route path="/products/:pk" element={<DetailPage />} />
       {/* Puedes agregar más rutas según sea necesario */}
     </Routes>
   );

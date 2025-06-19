@@ -20,6 +20,13 @@ class FichaTecnica(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+class Caracteristica(models.Model):
+    descripcion = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.descripcion
+    
 
 class Producto(models.Model):
     nombre = models.CharField(max_length=200)
@@ -32,7 +39,7 @@ class Producto(models.Model):
     # Imagen desde Cloudinary o URL
     imagen = CloudinaryField('imagen', blank=True, null=True)
     imagen_url = models.URLField(blank=True, null=True)
-
+    caracteristicas = models.ForeignKey(Caracteristica, on_delete=models.CASCADE, blank=True, null=True)
     ficha_tecnica = models.ForeignKey(FichaTecnica, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):

@@ -74,7 +74,7 @@ class ChangePasswordSerializer(serializers.Serializer):
 class ProductoDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
-        fields = ['id', 'nombre', 'descripcion', 'precio', 'stock', 'imagen' ]
+        fields = ['id', 'nombre', 'descripcion', 'precio', 'imagen', 'marca', 'categoria', 'ficha_tecnica', 'caracteristicas']
         read_only_fields = ['id']
 
     def to_representation(self, instance):
