@@ -72,7 +72,6 @@ class ChangePasswordSerializer(serializers.Serializer):
 #Serializers de productos
 
 
-
 class ProductoDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
@@ -97,18 +96,25 @@ class ProductoDetailSerializer(serializers.ModelSerializer):
             c.descripcion for c in instance.caracteristicas.all()
         ]
 
-        # Ficha técnica: URL forzada para descarga
+        # Ficha técnica: link al PDF desde Cloudinary con descarga forzada
         if instance.ficha_tecnica and instance.ficha_tecnica.archivo_pdf:
+            public_id = instance.ficha_tecnica.archivo_pdf.public_id
+            version = instance.ficha_tecnica.archivo_pdf.version
+            # Asegúrate que el public_id incluya la extensión .pdf
+            if not public_id.endswith('.pdf'):
+                public_id += '.pdf'
             url, _ = cloudinary_url(
-                instance.ficha_tecnica.archivo_pdf.public_id,
+                public_id,
                 resource_type='raw',
-                flags='attachment'
+                version=version,
+                flags='attachment'  # Esto fuerza la descarga
             )
             representation['ficha_tecnica'] = url
         else:
             representation['ficha_tecnica'] = None
 
         return representation
+
 
     
 class ProductoListSerializer(serializers.ModelSerializer):
