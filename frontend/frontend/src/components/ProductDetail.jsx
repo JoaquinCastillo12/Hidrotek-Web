@@ -24,7 +24,6 @@ const ProductDetail = () => {
   }, [pk]);
 
   const handleAddToCart = () => {
-    // Lógica de ejemplo usando localStorage
     const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
     const yaExiste = carrito.find((item) => item.id === producto.id);
     if (!yaExiste) {
@@ -35,7 +34,6 @@ const ProductDetail = () => {
       setMensaje("Este producto ya está en el carrito");
     }
 
-    // Limpia el mensaje después de unos segundos
     setTimeout(() => setMensaje(""), 3000);
   };
 
@@ -61,33 +59,35 @@ const ProductDetail = () => {
         <p><strong>Marca:</strong> {producto.marca}</p>
         <p><strong>Categoría:</strong> {producto.categoria}</p>
 
-        {producto.ficha_tecnica && (
-          <p>
-            <strong>Ficha técnica:</strong>{" "}
-            <a
-              href={producto.ficha_tecnica}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 underline"
-            >
-              Ver documento
-            </a>
-          </p>
-        )}
+        {producto.ficha_tecnica && typeof producto.ficha_tecnica === 'string' && (
+  <div className="mt-3">
+    <strong>Ficha técnica:</strong>
+    <br />
+    <a
+      href={producto.ficha_tecnica}
+      download
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-block mt-2 bg-gray-800 hover:bg-gray-900 text-white py-2 px-4 rounded-md transition"
+    >
+      Descargar PDF
+    </a>
+  </div>
+)}
 
-        {producto.caracteristicas && (
-          <div>
-            <strong>Características:</strong>
-            <ul className="list-disc list-inside">
-              {producto.caracteristicas.split('\n').map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+{producto.caracteristicas && typeof producto.caracteristicas === 'string' && (
+  <div className="mt-4">
+    <strong>Características:</strong>
+    <ul className="list-disc list-inside">
+      {producto.caracteristicas.split('\n').map((item, index) => (
+        <li key={index}>{item}</li>
+      ))}
+    </ul>
+  </div>
+)}
+
       </div>
 
-      {/* Botón para agregar al carrito */}
       <button
         onClick={handleAddToCart}
         className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition"
@@ -95,7 +95,6 @@ const ProductDetail = () => {
         Agregar al carrito
       </button>
 
-      {/* Mensaje de confirmación */}
       {mensaje && (
         <p className="text-green-600 text-center mt-3">{mensaje}</p>
       )}
@@ -104,3 +103,4 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
+

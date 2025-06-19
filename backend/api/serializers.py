@@ -72,15 +72,31 @@ class ChangePasswordSerializer(serializers.Serializer):
 
     
 class ProductoDetailSerializer(serializers.ModelSerializer):
+    marca = serializers.StringRelatedField()
+    categoria = serializers.StringRelatedField()
+    caracteristicas = serializers.SerializerMethodField()
+    ficha_tecnica = serializers.SerializerMethodField()
+
     class Meta:
         model = Producto
-        fields = ['id', 'nombre', 'descripcion', 'precio', 'imagen', 'marca', 'categoria', 'ficha_tecnica', 'caracteristicas']
-        read_only_fields = ['id']
+        fields = [
+            'id', 'nombre', 'descripcion', 'precio', 'stock',
+            'imagen', 'marca', 'categoria', 'ficha_tecnica', 'caracteristicas'
+        ]
+
+    def get_caracteristicas(self, obj):
+        return [c.texto for c in obj.caracteristicas.all()]
+
+    def get_ficha_tecnica(self, obj):
+        if obj.ficha_tecnica and hasattr(obj.ficha_tecnica, 'archivo'):
+            return obj.ficha_tecnica.archivo.url
+        return None
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['imagen'] = instance.imagen.url if instance.imagen else None
+        representation['imagen'] = instance.imagen.url if instance.imagen else instance.imagen_url
         return representation
+
     
 class ProductoListSerializer(serializers.ModelSerializer):
     marca = serializers.StringRelatedField()
