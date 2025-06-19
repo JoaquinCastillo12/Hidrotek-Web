@@ -96,8 +96,9 @@ class ProductoDetailSerializer(serializers.ModelSerializer):
 
         # Ficha técnica: link al PDF desde Cloudinary
         representation['ficha_tecnica'] = (
-            instance.ficha_tecnica.archivo_pdf.url if instance.ficha_tecnica else None
-        )
+    instance.ficha_tecnica.archivo_pdf.build_url(flags="attachment")
+    if instance.ficha_tecnica else None
+)
 
         return representation
 
