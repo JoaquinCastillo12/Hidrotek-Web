@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Footer from '../components/footer';
 import { useNavigate } from "react-router-dom";
 
 
