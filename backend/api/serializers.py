@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Producto, Cotizacion, DetalleCotizacion, Marca, Categoria, ContactMessage
+from cloudinary.utils import cloudinary_url
 
 
 #Serializer de usuarios
@@ -70,6 +71,8 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 #Serializers de productos
 
+
+
 class ProductoDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
@@ -94,15 +97,18 @@ class ProductoDetailSerializer(serializers.ModelSerializer):
             c.descripcion for c in instance.caracteristicas.all()
         ]
 
-        # Ficha técnica: link al PDF desde Cloudinary
-        representation['ficha_tecnica'] = (
-    instance.ficha_tecnica.archivo_pdf.build_url(flags="attachment")
-    if instance.ficha_tecnica else None
-)
+        # Ficha técnica: URL forzada para descarga
+        if instance.ficha_tecnica and instance.ficha_tecnica.archivo_pdf:
+            url, _ = cloudinary_url(
+                instance.ficha_tecnica.archivo_pdf.public_id,
+                resource_type='raw',
+                flags='attachment'
+            )
+            representation['ficha_tecnica'] = url
+        else:
+            representation['ficha_tecnica'] = None
 
         return representation
-
-
 
     
 class ProductoListSerializer(serializers.ModelSerializer):
