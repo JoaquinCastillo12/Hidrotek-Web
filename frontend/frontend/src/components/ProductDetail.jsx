@@ -18,7 +18,7 @@ const ProductDetail = () => {
         setLoading(false);
       })
       .catch((error) => {
-        console.error(error);
+        console.error("Error al cargar el producto:", error);
         setLoading(false);
       });
   }, [pk]);
@@ -59,33 +59,32 @@ const ProductDetail = () => {
         <p><strong>Marca:</strong> {producto.marca}</p>
         <p><strong>Categoría:</strong> {producto.categoria}</p>
 
-        {producto.ficha_tecnica && typeof producto.ficha_tecnica === 'string' && (
-  <div className="mt-3">
-    <strong>Ficha técnica:</strong>
-    <br />
-    <a
-      href={producto.ficha_tecnica}
-      download
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-block mt-2 bg-gray-800 hover:bg-gray-900 text-white py-2 px-4 rounded-md transition"
-    >
-      Descargar PDF
-    </a>
-  </div>
-)}
+        {producto.ficha_tecnica && (
+          <div className="mt-3">
+            <strong>Ficha técnica:</strong>
+            <br />
+            <a
+              href={producto.ficha_tecnica}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-block mt-2 bg-gray-800 hover:bg-gray-900 text-white py-2 px-4 rounded-md transition"
+            >
+              Descargar PDF
+            </a>
+          </div>
+        )}
 
-{producto.caracteristicas && typeof producto.caracteristicas === 'string' && (
-  <div className="mt-4">
-    <strong>Características:</strong>
-    <ul className="list-disc list-inside">
-      {producto.caracteristicas.split('\n').map((item, index) => (
-        <li key={index}>{item}</li>
-      ))}
-    </ul>
-  </div>
-)}
-
+        {producto.caracteristicas && Array.isArray(producto.caracteristicas) && (
+          <div className="mt-4">
+            <strong>Características:</strong>
+            <ul className="list-disc list-inside">
+              {producto.caracteristicas.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       <button
@@ -103,4 +102,5 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
+
 

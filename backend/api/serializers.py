@@ -72,30 +72,29 @@ class ChangePasswordSerializer(serializers.Serializer):
 
     
 class ProductoDetailSerializer(serializers.ModelSerializer):
-    marca = serializers.StringRelatedField()
-    categoria = serializers.StringRelatedField()
-    caracteristicas = serializers.SerializerMethodField()
-    ficha_tecnica = serializers.SerializerMethodField()
-
     class Meta:
         model = Producto
-        fields = [
-            'id', 'nombre', 'descripcion', 'precio', 'stock',
-            'imagen', 'marca', 'categoria', 'ficha_tecnica', 'caracteristicas'
-        ]
-
-    def get_caracteristicas(self, obj):
-        return [c.texto for c in obj.caracteristicas.all()]
-
-    def get_ficha_tecnica(self, obj):
-        if obj.ficha_tecnica and hasattr(obj.ficha_tecnica, 'archivo'):
-            return obj.ficha_tecnica.archivo.url
-        return None
+        fields = ['id', 'nombre', 'descripcion', 'precio', 'imagen', 'marca', 'categoria', 'ficha_tecnica', 'caracteristicas', 'stock']
+        read_only_fields = ['id']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['imagen'] = instance.imagen.url if instance.imagen else instance.imagen_url
+
+        # Imagen
+        representation['imagen'] = instance.imagen.url if instance.imagen else None
+
+        # Nombre legible de marca y categoría
+        representation['marca'] = instance.marca.nombre if instance.marca else None
+        representation['categoria'] = instance.categoria.nombre if instance.categoria else None
+
+        # URL del PDF
+        representation['ficha_tecnica'] = instance.ficha_tecnica.archivo.url if instance.ficha_tecnica and instance.ficha_tecnica.archivo else None
+
+        # Lista de características
+        representation['caracteristicas'] = [c.descripcion for c in instance.caracteristicas.all()]
+
         return representation
+
 
     
 class ProductoListSerializer(serializers.ModelSerializer):
