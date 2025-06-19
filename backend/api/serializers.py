@@ -70,30 +70,37 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 #Serializers de productos
 
-    
 class ProductoDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
-        fields = ['id', 'nombre', 'descripcion', 'precio', 'imagen', 'marca', 'categoria', 'ficha_tecnica', 'caracteristicas', 'stock']
+        fields = [
+            'id', 'nombre', 'descripcion', 'precio', 'stock', 'imagen',
+            'marca', 'categoria', 'caracteristicas', 'ficha_tecnica'
+        ]
         read_only_fields = ['id']
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
-        # Imagen
+        # Imagen desde Cloudinary
         representation['imagen'] = instance.imagen.url if instance.imagen else None
 
-        # Nombre legible de marca y categoría
+        # Mostrar nombre de marca y categoría
         representation['marca'] = instance.marca.nombre if instance.marca else None
         representation['categoria'] = instance.categoria.nombre if instance.categoria else None
 
-        # URL del PDF
-        representation['ficha_tecnica'] = instance.ficha_tecnica.archivo.url if instance.ficha_tecnica and instance.ficha_tecnica.archivo else None
+        # Características: lista de descripciones
+        representation['caracteristicas'] = [
+            c.descripcion for c in instance.caracteristicas.all()
+        ]
 
-        # Lista de características
-        representation['caracteristicas'] = [c.descripcion for c in instance.caracteristicas.all()]
+        # Ficha técnica: link al PDF desde Cloudinary
+        representation['ficha_tecnica'] = (
+            instance.ficha_tecnica.archivo_pdf.url if instance.ficha_tecnica else None
+        )
 
         return representation
+
 
 
     
