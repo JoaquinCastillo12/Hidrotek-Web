@@ -6,7 +6,7 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import SideBarFilter from '../components/SideBarFilter';
 import SearchBar from '../components/SearchBar';
 import ProductList from '../components/ProductList';
-import Footer from '../components/Footer';
+import Footer from '../components/footer';
 import axios from 'axios';
 import Cart from '../components/Cart';
 
