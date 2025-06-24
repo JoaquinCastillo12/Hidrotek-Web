@@ -3,92 +3,97 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
- <style>
-  * {
-    box-sizing: border-box;
-  }
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-  body {
-    font-family: Arial, sans-serif;
-    font-size: 12px;
-    margin: 40px;
-    color: #333;
-  }
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      margin: 40px;
+      color: #333;
+    }
 
-  h2, h4 {
-    margin: 5px 0;
-  }
+    h2, h4 {
+      margin: 5px 0;
+    }
 
-  p {
-    margin: 2px 0;
-  }
+    p {
+      margin: 2px 0;
+    }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    table-layout: fixed;
-  }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      table-layout: fixed;
+    }
 
-  th, td {
-    border: 1px solid #ccc;
-    padding: 6px 8px;
-    text-align: left;
-    vertical-align: top;
-    word-wrap: break-word;
-  }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px 8px;
+      text-align: left;
+      vertical-align: top;
+      word-wrap: break-word;
+    }
 
-  th {
-    background-color: #f0f0f0;
-    font-weight: bold;
-  }
+    th {
+      background-color: #f0f0f0;
+      font-weight: bold;
+      text-align: center;
+    }
 
-  .no-border td {
-    border: none;
-    padding: 2px 0;
-  }
+    .no-border td {
+      border: none;
+      padding: 2px 0;
+    }
 
-  .totales {
-    width: 40%;
-    float: right;
-  }
+    .totales {
+      width: 40%;
+      float: right;
+      border: 1px solid #ccc;
+      border-collapse: collapse;
+    }
 
-  .totales td {
-    text-align: right;
-    border: none;
-    padding: 6px 8px;
-  }
+    .totales td {
+      padding: 6px 8px;
+      border: 1px solid #ccc;
+    }
 
-  .totales tr td:first-child {
-    text-align: left;
-  }
+    .totales tr td:first-child {
+      text-align: left;
+      font-weight: bold;
+    }
 
-  .text-right {
-    text-align: right;
-  }
+    .totales tr:last-child td {
+      font-size: 13px;
+    }
 
-  hr {
-    border: none;
-    border-top: 1px solid #ccc;
-    margin: 20px 0;
-  }
+    .text-right {
+      text-align: right;
+    }
 
-  /* Ajustar ancho de columnas si es necesario */
-th:nth-child(1), td:nth-child(1) { width: 5%; }
-th:nth-child(2), td:nth-child(2) { width: 35%; }
-th:nth-child(3), td:nth-child(3) { width: 10%; }
-th:nth-child(4), td:nth-child(4) { width: 15%; }
-th:nth-child(5), td:nth-child(5) { width: 15%; }
-th:nth-child(6), td:nth-child(6) { width: 10%; }
-th:nth-child(7), td:nth-child(7) { width: 10%; } /* Changed from 15% to 10% */
-</style>
+    hr {
+      border: none;
+      border-top: 1px solid #ccc;
+      margin: 20px 0;
+    }
 
+    th:nth-child(1), td:nth-child(1) { width: 5%; text-align: center; }
+    th:nth-child(2), td:nth-child(2) { width: 35%; }
+    th:nth-child(3), td:nth-child(3) { width: 10%; text-align: center; }
+    th:nth-child(4), td:nth-child(4) { width: 15%; text-align: right; }
+    th:nth-child(5), td:nth-child(5) { width: 15%; text-align: right; }
+    th:nth-child(6), td:nth-child(6) { width: 10%; text-align: right; }
+    th:nth-child(7), td:nth-child(7) { width: 10%; text-align: right; }
+  </style>
 </head>
 <body>
 
   <!-- Encabezado de empresa -->
- <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 10px;">
-    <img src="{% static 'images/LOGO HIDROTEK.jpg' %}" alt="Logo Hidrotek" style="height: 80px;">
+  <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 10px;">
+    <img src="{{ logo_path }}" alt="Logo Hidrotek" style="height: 80px;">
     <div>
       <h2>SOLUCIONES Y SERVICIOS TÉCNICOS CHIRIQUÍ, S.A.</h2>
       <p>
@@ -120,11 +125,11 @@ th:nth-child(7), td:nth-child(7) { width: 10%; } /* Changed from 15% to 10% */
       <tr>
         <th>#</th>
         <th>Descripción</th>
-        <th>Cantidad</th>
-        <th>Precio Unitario</th>
+        <th>Cant.</th>
+        <th>P. Unitario</th>
         <th>Subtotal</th>
         <th>ITBMS (7%)</th>
-        <th>Total con ITBMS</th>
+        <th>Total</th>
       </tr>
     </thead>
     <tbody>
@@ -145,11 +150,11 @@ th:nth-child(7), td:nth-child(7) { width: 10%; } /* Changed from 15% to 10% */
   <!-- Totales -->
   <table class="totales">
     <tr>
-      <td><strong>Subtotal:</strong></td>
-      <td>${{ cotizacion.total|floatformat:2|floatformat:2 }}</td>
+      <td>Subtotal:</td>
+      <td>${{ cotizacion.total|floatformat:2 }}</td>
     </tr>
     <tr>
-      <td><strong>ITBMS Total (7%):</strong></td>
+      <td>ITBMS Total (7%):</td>
       <td>${{ itbms_total|floatformat:2 }}</td>
     </tr>
     <tr>

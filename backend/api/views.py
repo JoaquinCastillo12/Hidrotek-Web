@@ -1,4 +1,4 @@
-from rest_framework import generics, viewsets, permissions
+from rest_framework import generics, permissions
 from django.contrib.auth.models import User
 from .serializers import RegisterSerializer 
 from rest_framework.permissions import AllowAny
@@ -8,8 +8,6 @@ from rest_framework import generics
 from rest_framework.response import Response
 from django.shortcuts import render
 from rest_framework.views import APIView
-from rest_framework import status
-from django.core.mail import send_mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.http import HttpResponse
@@ -18,7 +16,7 @@ from io import BytesIO
 import os
 from django.conf import settings
 from django.contrib.staticfiles import finders
-
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 from .serializers import (
@@ -57,13 +55,19 @@ class LoginView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
     permission_classes = [AllowAny]
 
-    
-class LogoutView(generics.GenericAPIView):
+
+class LogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        request.auth.delete()
-        return Response({"message": "Logged out successfully"}, status=204)
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({"message": "Logged out successfully"}, status=204)
+        except Exception as e:
+            return Response({"error": "Invalid token or already blacklisted"}, status=400)
+
     
 #Apis de productos
 
@@ -117,15 +121,26 @@ class CotizacionUpdateView(generics.UpdateAPIView):
 from decimal import Decimal
 
 def link_callback(uri, rel):
+    """
+    Convierte las rutas relativas en rutas absolutas del sistema de archivos
+    para que xhtml2pdf pueda encontrar imágenes y otros recursos.
+    """
     if uri.startswith(settings.STATIC_URL):
-        path = uri.replace(settings.STATIC_URL, "")
-        absolute_path = finders.find(path)
-        if absolute_path:
-            return absolute_path
+        path = os.path.join(settings.STATIC_ROOT, uri.replace(settings.STATIC_URL, ""))
+    elif uri.startswith(settings.MEDIA_URL):
+        path = os.path.join(settings.MEDIA_ROOT, uri.replace(settings.MEDIA_URL, ""))
+    else:
+        result = finders.find(uri)
+        if result:
+            if not isinstance(result, (list, tuple)):
+                result = [result]
+            path = result[0]
         else:
-            # Último intento si 'find' falla
-            return os.path.join(settings.STATIC_ROOT, path)
-    return uri
+            return uri  # Fallback: puede ser una URL externa
+
+    if not os.path.isfile(path):
+        raise Exception(f"El archivo no se encontró: {path}")
+    return path
 
 
 class CotizacionPDFCreateView(APIView):
@@ -174,14 +189,17 @@ class CotizacionPDFCreateView(APIView):
         cotizacion.total = total
         cotizacion.save()
 
+        # Ruta relativa del logo dentro de STATIC
+        logo_path = os.path.join(settings.STATIC_URL, 'images', 'LOGO HIDROTEK.jpg')
+
         html = render_to_string('cotizacion_pdf.html', {
             'cotizacion': cotizacion,
             'detalles': detalles_objs,
             'itbms_total': itbms_total,
-            'total_con_itbms': total
+            'total_con_itbms': total,
+            'logo_path': logo_path
         })
 
-        print(html)
         result = BytesIO()
         pisa_status = pisa.CreatePDF(html, dest=result, link_callback=link_callback)
 
