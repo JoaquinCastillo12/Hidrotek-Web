@@ -109,32 +109,33 @@
   </table>
 
   <!-- Detalles de productos -->
-  <table>
-    <thead>
-      <tr>
-        <th style="width:5%; text-align: center;">#</th>
-        <th style="width:45%;">Descripción</th>
-        <th style="width:10%; text-align: center;">Cantidad</th>
-        <th style="width:15%; text-align: right;">Precio Unitario</th>
-        <th style="width:10%; text-align: right;">Subtotal</th>
-        <th style="width:7.5%; text-align: right;">ITBMS (7%)</th>
-        <th style="width:7.5%; text-align: right;">Total con ITBMS</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for d in detalles %}
-      <tr>
-        <td style="text-align: center;">{{ forloop.counter }}</td>
-        <td>{{ d.producto.nombre }}</td>
-        <td style="text-align: center;">{{ d.cantidad }}</td>
-        <td style="text-align: right;">${{ d.precio_unitario|floatformat:2 }}</td>
-        <td style="text-align: right;">${{ d.subtotal|floatformat:2 }}</td>
-        <td style="text-align: right;">${{ d.itbms|floatformat:2 }}</td>
-        <td style="text-align: right;">${{ d.subtotal_con_itbms|floatformat:2 }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <table border="1" cellspacing="0" cellpadding="4" width="100%">
+  <thead>
+    <tr>
+      <th width="5%" style="text-align:center;">#</th>
+      <th width="45%">Descripción</th>
+      <th width="10%" style="text-align:center;">Cantidad</th>
+      <th width="15%" style="text-align:right;">Precio Unitario</th>
+      <th width="10%" style="text-align:right;">Subtotal</th>
+      <th width="7.5%" style="text-align:right;">ITBMS (7%)</th>
+      <th width="7.5%" style="text-align:right;">Total con ITBMS</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for d in detalles %}
+    <tr>
+      <td style="text-align:center;">{{ forloop.counter }}</td>
+      <td>{{ d.producto.nombre }}</td>
+      <td style="text-align:center;">{{ d.cantidad }}</td>
+      <td style="text-align:right;">${{ d.precio_unitario|floatformat:2 }}</td>
+      <td style="text-align:right;">${{ d.subtotal|floatformat:2 }}</td>
+      <td style="text-align:right;">${{ d.itbms|floatformat:2 }}</td>
+      <td style="text-align:right;">${{ d.subtotal_con_itbms|floatformat:2 }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
 
   <!-- Totales -->
   <table class="totales">
