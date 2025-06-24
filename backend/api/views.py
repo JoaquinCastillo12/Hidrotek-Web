@@ -214,6 +214,63 @@ class CotizacionPDFCreateView(APIView):
     
 def HomeView(request):
     return render(request, 'Prueba.html')
+from django.template.loader import get_template
+from django.http import HttpResponse
+from xhtml2pdf import pisa
+import io
+from types import SimpleNamespace
+
+
+def prueba_pdf(request):
+    # 🔹 Datos simulados
+    cotizacion_de_ejemplo = SimpleNamespace(
+        id=123,
+        usuario=SimpleNamespace(username="Juan Pérez"),
+        correo="juanperez@ejemplo.com",
+        fecha="2025-06-24 10:00",
+        total=140.00
+    )
+
+    lista_de_detalles_simulada = [
+        SimpleNamespace(
+            producto=SimpleNamespace(nombre="Bomba Centrífuga 1HP"),
+            cantidad=2,
+            precio_unitario=50.00,
+            subtotal=100.00,
+            itbms=7.00,
+            subtotal_con_itbms=107.00
+        ),
+        SimpleNamespace(
+            producto=SimpleNamespace(nombre="Tanque de 500L"),
+            cantidad=1,
+            precio_unitario=40.00,
+            subtotal=40.00,
+            itbms=2.80,
+            subtotal_con_itbms=42.80
+        )
+    ]
+
+    # 🔹 Ruta de imagen (usa una imagen local o URL completa para pruebas)
+    logo_path = os.path.join(settings.STATIC_URL, 'images', 'LOGO HIDROTEK.jpg')  # reemplaza si quieres usar una imagen local
+
+    # 🔹 Renderizado del PDF
+    template = get_template("cotizacion_pdf.html")  # tu plantilla
+    context = {
+        "cotizacion": cotizacion_de_ejemplo,
+        "detalles": lista_de_detalles_simulada,
+        "logo_path": logo_path,
+        "itbms_total": 9.80,
+        "total_con_itbms": 149.80
+    }
+
+    html = template.render(context)
+    result = io.BytesIO()
+    pdf = pisa.pisaDocument(io.BytesIO(html.encode("UTF-8")), result)
+
+    if not pdf.err:
+        return HttpResponse(result.getvalue(), content_type="application/pdf")
+    return HttpResponse("Error al generar PDF", status=500)
+
 
 #Apis de marcas 
 
