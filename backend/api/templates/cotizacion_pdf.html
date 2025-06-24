@@ -27,7 +27,6 @@
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 20px;
-      /* Quitamos table-layout: fixed para mejor compatibilidad */
     }
 
     th, td {
@@ -47,19 +46,23 @@
       padding: 2px 0;
     }
 
+    /* Tabla de totales con mismo ancho que la tabla principal */
     .totales {
-      width: 40%;
-      float: right;
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
     }
 
     .totales td {
-      text-align: right;
       border: none;
       padding: 6px 8px;
+      text-align: right;
     }
 
+    /* El label (primer td) alineado a la izquierda */
     .totales tr td:first-child {
       text-align: left;
+      font-weight: bold;
     }
 
     .text-right {
@@ -76,21 +79,20 @@
 <body>
 
   <!-- Encabezado de empresa -->
- <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-  <div>
-    <img src="{{ logo_path }}" alt="Logo Hidrotek" style="height: 80px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+    <div>
+      <img src="{{ logo_path }}" alt="Logo Hidrotek" style="height: 80px;">
+    </div>
+    <div style="text-align: right; max-width: 70%;">
+      <h2 style="margin: 0;">SOLUCIONES Y SERVICIOS TÉCNICOS CHIRIQUÍ, S.A.</h2>
+      <p style="margin: 2px 0;">
+        RUC: 155641485-2-2016 DV:23<br>
+        Dirección: Vía Interamericana<br>
+        Teléfono: +507-7704700 | Celular: 6525-8464<br>
+        Email: ventashidrotek@gmail.com
+      </p>
+    </div>
   </div>
-  <div style="text-align: right; max-width: 70%;">
-    <h2 style="margin: 0;">SOLUCIONES Y SERVICIOS TÉCNICOS CHIRIQUÍ, S.A.</h2>
-    <p style="margin: 2px 0;">
-      RUC: 155641485-2-2016 DV:23<br>
-      Dirección: Vía Interamericana<br>
-      Teléfono: +507-7704700 | Celular: 6525-8464<br>
-      Email: ventashidrotek@gmail.com
-    </p>
-  </div>
-</div>
-
 
   <hr>
 
@@ -111,10 +113,10 @@
     <thead>
       <tr>
         <th style="width:5%; text-align: center;">#</th>
-        <th style="width:40%;">Descripción</th>
+        <th style="width:45%;">Descripción</th>
         <th style="width:10%; text-align: center;">Cantidad</th>
         <th style="width:15%; text-align: right;">Precio Unitario</th>
-        <th style="width:15%; text-align: right;">Subtotal</th>
+        <th style="width:10%; text-align: right;">Subtotal</th>
         <th style="width:7.5%; text-align: right;">ITBMS (7%)</th>
         <th style="width:7.5%; text-align: right;">Total con ITBMS</th>
       </tr>
@@ -137,15 +139,15 @@
   <!-- Totales -->
   <table class="totales">
     <tr>
-      <td><strong>Subtotal:</strong></td>
+      <td>Subtotal:</td>
       <td>${{ cotizacion.total|floatformat:2 }}</td>
     </tr>
     <tr>
-      <td><strong>ITBMS Total (7%):</strong></td>
+      <td>ITBMS Total (7%):</td>
       <td>${{ itbms_total|floatformat:2 }}</td>
     </tr>
     <tr>
-      <td><strong>Total con ITBMS:</strong></td>
+      <td>Total con ITBMS:</td>
       <td><strong>${{ total_con_itbms|floatformat:2 }}</strong></td>
     </tr>
   </table>
@@ -153,5 +155,6 @@
   <p class="text-right">Gracias por su preferencia.</p>
 </body>
 </html>
+
 
 
