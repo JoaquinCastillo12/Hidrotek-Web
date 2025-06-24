@@ -28,56 +28,67 @@
   <hr style="border:none; border-top:1px solid #ccc; margin: 20px 0;">
 
   <!-- Datos del cliente -->
-<table border="1" cellspacing="0" cellpadding="4" width="100%">
-  <thead>
-    <tr style="background-color:#f0f0f0; font-weight:bold;">
-      <th width="25" style="text-align:center;">#</th>
-      <th width="240">Descripción</th>
-      <th width="50" style="text-align:center;">Cant.</th>
-      <th width="80" style="text-align:right;">Precio Unit.</th>
-      <th width="70" style="text-align:right;">Subtotal</th>
-      <th width="55" style="text-align:right;">ITBMS</th>
-      <th width="80" style="text-align:right;">Total</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for d in detalles %}
+  <table width="100%" cellspacing="0" cellpadding="3" border="0" style="margin-bottom: 15px;">
     <tr>
-      <td style="text-align:center;">{{ forloop.counter }}</td>
-      <td style="word-wrap: break-word;">{{ d.producto.nombre }}</td>
-      <td style="text-align:center;">{{ d.cantidad }}</td>
-      <td style="text-align:right; white-space: nowrap;">${{ d.precio_unitario|floatformat:2 }}</td>
-      <td style="text-align:right;">${{ d.subtotal|floatformat:2 }}</td>
-      <td style="text-align:right;">${{ d.itbms|floatformat:2 }}</td>
-      <td style="text-align:right;">${{ d.subtotal_con_itbms|floatformat:2 }}</td>
+      <td><strong>Cliente:</strong> {{ cotizacion.usuario.username }}</td>
+      <td><strong>Correo:</strong> {{ cotizacion.correo }}</td>
     </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    <tr>
+      <td><strong>Fecha:</strong> {{ cotizacion.fecha|date:"d/m/Y H:i" }}</td>
+      <td><strong>ID Cotización:</strong> {{ cotizacion.id }}</td>
+    </tr>
+  </table>
 
-
+  <!-- Tabla de productos -->
+  <table border="1" cellspacing="0" cellpadding="4" width="100%">
+    <thead>
+      <tr style="background-color:#f0f0f0; font-weight:bold;">
+        <th width="25" style="text-align:center;">#</th>
+        <th width="230">Descripción</th>
+        <th width="50" style="text-align:center;">Cant.</th>
+        <th width="85" style="text-align:right;">Precio Unit.</th>
+        <th width="70" style="text-align:right;">Subtotal</th>
+        <th width="60" style="text-align:right;">ITBMS</th>
+        <th width="80" style="text-align:right;">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in detalles %}
+      <tr>
+        <td style="text-align:center;">{{ forloop.counter }}</td>
+        <td style="word-wrap: break-word;">{{ d.producto.nombre }}</td>
+        <td style="text-align:center;">{{ d.cantidad }}</td>
+        <td style="text-align:right; white-space: nowrap;">${{ d.precio_unitario|floatformat:2 }}</td>
+        <td style="text-align:right;">${{ d.subtotal|floatformat:2 }}</td>
+        <td style="text-align:right;">${{ d.itbms|floatformat:2 }}</td>
+        <td style="text-align:right;">${{ d.subtotal_con_itbms|floatformat:2 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
   <!-- Totales -->
-  <table border="0" cellspacing="0" cellpadding="4" align="right">
-  <tr>
-    <td align="right"><strong>Subtotal:</strong></td>
-    <td width="80" align="right">${{ cotizacion.total|floatformat:2 }}</td>
-  </tr>
-  <tr>
-    <td align="right"><strong>ITBMS (7%):</strong></td>
-    <td width="80" align="right">${{ itbms_total|floatformat:2 }}</td>
-  </tr>
-  <tr>
-    <td align="right"><strong>Total con ITBMS:</strong></td>
-    <td width="80" align="right"><strong>${{ total_con_itbms|floatformat:2 }}</strong></td>
-  </tr>
-</table>
+  <table border="0" cellspacing="0" cellpadding="4" style="margin-top: 15px; float: right;">
+    <tr>
+      <td align="right"><strong>Subtotal:</strong></td>
+      <td width="80" align="right">${{ cotizacion.total|floatformat:2 }}</td>
+    </tr>
+    <tr>
+      <td align="right"><strong>ITBMS (7%):</strong></td>
+      <td width="80" align="right">${{ itbms_total|floatformat:2 }}</td>
+    </tr>
+    <tr>
+      <td align="right"><strong>Total con ITBMS:</strong></td>
+      <td width="80" align="right"><strong>${{ total_con_itbms|floatformat:2 }}</strong></td>
+    </tr>
+  </table>
 
-
-  <p style="text-align: right; margin-top: 30px;">Gracias por su preferencia.</p>
+  <div style="clear: both;"></div>
+  <p style="text-align: right; margin-top: 40px;">Gracias por su preferencia.</p>
 
 </body>
 </html>
+
 
 
 
