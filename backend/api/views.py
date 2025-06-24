@@ -210,6 +210,30 @@ class CotizacionPDFCreateView(APIView):
         response['Content-Disposition'] = f'inline; filename="cotizacion_{cotizacion.id}.pdf"'
         return response
 
+from rest_framework.decorators import api_view
+import requests
+@api_view(['GET'])
+def ver_pdf(request, producto_id):
+    from .models import Producto  # Ajusta según tu estructura
+
+    try:
+        producto = Producto.objects.get(pk=producto_id)
+        pdf_url = producto.ficha_tecnica  # campo con URL de Cloudinary
+
+        # Descargar PDF desde Cloudinary
+        response = requests.get(pdf_url)
+
+        if response.status_code == 200:
+            return HttpResponse(
+                response.content,
+                content_type='application/pdf'
+            )
+        else:
+            return HttpResponse('No se pudo obtener el PDF', status=404)
+
+    except Producto.DoesNotExist:
+        return HttpResponse('Producto no encontrado', status=404)
+
 #Prueba de vista
     
 def HomeView(request):

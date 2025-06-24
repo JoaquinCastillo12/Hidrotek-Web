@@ -14,6 +14,14 @@ const ProductDetail = () => {
         return res.json();
       })
       .then((data) => {
+        try {
+          if (typeof data.caracteristicas === 'string') {
+            data.caracteristicas = JSON.parse(data.caracteristicas);
+          }
+        } catch (error) {
+          console.warn("No se pudo parsear características:", error);
+        }
+
         setProducto(data);
         setLoading(false);
       })
@@ -60,29 +68,49 @@ const ProductDetail = () => {
         <p><strong>Categoría:</strong> {producto.categoria}</p>
 
         {producto.ficha_tecnica && (
-          <div className="mt-3">
+          <div className="mt-4 space-y-2">
             <strong>Ficha técnica:</strong>
-            <br />
-            <a
-              href={producto.ficha_tecnica}
-              download
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block mt-2 bg-gray-800 hover:bg-gray-900 text-white py-2 px-4 rounded-md transition"
-            >
-              Descargar PDF
-            </a>
+            <div className="space-x-2">
+              <a
+                href={producto.ficha_tecnica.replace('/fl_attachment/', '/')}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition"
+              >
+                Ver ficha técnica
+              </a>
+              <a
+                href={producto.ficha_tecnica.replace('/raw/upload/fl_attachment/', '/raw/upload/')}
+                download
+                className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition"
+              >
+                Descargar
+              </a>
+            </div>
+
+            {/* IFRAME para ver el PDF en la página */}
+            <div className="mt-4">
+              <iframe
+                src={producto.ficha_tecnica.replace('/fl_attachment/', '/')}
+                className="w-full h-[500px] border rounded-md"
+                title="Vista previa de la ficha técnica"
+              />
+            </div>
           </div>
         )}
 
-        {producto.caracteristicas && Array.isArray(producto.caracteristicas) && (
+        {producto.caracteristicas && (
           <div className="mt-4">
             <strong>Características:</strong>
-            <ul className="list-disc list-inside">
-              {producto.caracteristicas.map((item, index) => (
-                <li key={index}>{item}</li>
-              ))}
-            </ul>
+            {Array.isArray(producto.caracteristicas) ? (
+              <ul className="list-disc list-inside">
+                {producto.caracteristicas.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            ) : (
+              <p>{producto.caracteristicas}</p>
+            )}
           </div>
         )}
       </div>
@@ -102,5 +130,7 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
+
+
 
 
