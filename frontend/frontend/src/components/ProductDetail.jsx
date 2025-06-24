@@ -89,12 +89,14 @@ const ProductDetail = () => {
             </div>
 
             {/* IFRAME para ver el PDF en la página */}
-            <div className="mt-4">
-              <iframe
-                src={producto.ficha_tecnica.replace('/fl_attachment/', '/')}
-                className="w-full h-[500px] border rounded-md"
-                title="Vista previa de la ficha técnica"
-              />
+              <div className="mt-4">
+                <iframe
+  src={`https://hidrotek.onrender.com/ficha/${producto.ficha_tecnica}/`}
+  className="w-full h-[500px] border rounded-md"
+  title="Ficha técnica"
+/>
+
+
             </div>
           </div>
         )}

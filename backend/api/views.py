@@ -210,29 +210,21 @@ class CotizacionPDFCreateView(APIView):
         response['Content-Disposition'] = f'inline; filename="cotizacion_{cotizacion.id}.pdf"'
         return response
 
-from rest_framework.decorators import api_view
 import requests
-@api_view(['GET'])
-def ver_pdf(request, producto_id):
-    from .models import Producto  # Ajusta según tu estructura
+from django.http import HttpResponse, Http404
 
+def ver_ficha_tecnica(request, ruta):
+    # ruta viene como 'raw/upload/v1750350871/eahpt4dhierkrwasqwpf.pdf'
+    url = f"https://res.cloudinary.com/dimcffiqf/{ruta}"
+    
     try:
-        producto = Producto.objects.get(pk=producto_id)
-        pdf_url = producto.ficha_tecnica  # campo con URL de Cloudinary
+        r = requests.get(url)
+        if r.status_code != 200:
+            raise Http404("Archivo no encontrado")
+        return HttpResponse(r.content, content_type="application/pdf")
+    except requests.RequestException:
+        raise Http404("Error al obtener el archivo")
 
-        # Descargar PDF desde Cloudinary
-        response = requests.get(pdf_url)
-
-        if response.status_code == 200:
-            return HttpResponse(
-                response.content,
-                content_type='application/pdf'
-            )
-        else:
-            return HttpResponse('No se pudo obtener el PDF', status=404)
-
-    except Producto.DoesNotExist:
-        return HttpResponse('Producto no encontrado', status=404)
 
 #Prueba de vista
     
