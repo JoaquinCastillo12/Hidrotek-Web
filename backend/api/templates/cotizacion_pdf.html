@@ -3,101 +3,32 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 12px;
-      margin: 40px;
-      color: #333;
-    }
-
-    h2, h4 {
-      margin: 5px 0;
-    }
-
-    p {
-      margin: 2px 0;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 6px 8px;
-      vertical-align: top;
-      word-wrap: break-word;
-    }
-
-    th {
-      background-color: #f0f0f0;
-      font-weight: bold;
-    }
-
-    .no-border td {
-      border: none;
-      padding: 2px 0;
-    }
-
-    /* Tabla de totales con mismo ancho que la tabla principal */
-    .totales {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    .totales td {
-      border: none;
-      padding: 6px 8px;
-      text-align: right;
-    }
-
-    /* El label (primer td) alineado a la izquierda */
-    .totales tr td:first-child {
-      text-align: left;
-      font-weight: bold;
-    }
-
-    .text-right {
-      text-align: right;
-    }
-
-    hr {
-      border: none;
-      border-top: 1px solid #ccc;
-      margin: 20px 0;
-    }
-  </style>
+  <title>Cotización</title>
 </head>
-<body>
+<body style="font-family: Arial, sans-serif; font-size: 12px; color: #333; margin: 40px;">
 
-  <!-- Encabezado de empresa -->
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-    <div>
-      <img src="{{ logo_path }}" alt="Logo Hidrotek" style="height: 80px;">
-    </div>
-    <div style="text-align: right; max-width: 70%;">
-      <h2 style="margin: 0;">SOLUCIONES Y SERVICIOS TÉCNICOS CHIRIQUÍ, S.A.</h2>
-      <p style="margin: 2px 0;">
-        RUC: 155641485-2-2016 DV:23<br>
-        Dirección: Vía Interamericana<br>
-        Teléfono: +507-7704700 | Celular: 6525-8464<br>
-        Email: ventashidrotek@gmail.com
-      </p>
-    </div>
-  </div>
+  <!-- Encabezado con tabla para logo y texto alineado -->
+  <table width="100%" cellspacing="0" cellpadding="0" border="0" style="margin-bottom: 10px;">
+    <tr>
+      <td width="20%" valign="middle">
+        <img src="{{ logo_path }}" alt="Logo Hidrotek" style="height: 80px;">
+      </td>
+      <td width="80%" valign="middle" style="text-align: right;">
+        <h2 style="margin: 0; padding: 0;">SOLUCIONES Y SERVICIOS TÉCNICOS CHIRIQUÍ, S.A.</h2>
+        <p style="margin: 2px 0; line-height: 1.2;">
+          RUC: 155641485-2-2016 DV:23<br>
+          Dirección: Vía Interamericana<br>
+          Teléfono: +507-7704700 | Celular: 6525-8464<br>
+          Email: ventashidrotek@gmail.com
+        </p>
+      </td>
+    </tr>
+  </table>
 
-  <hr>
+  <hr style="border:none; border-top:1px solid #ccc; margin: 20px 0;">
 
-  <!-- Información del cliente y cotización -->
-  <table class="no-border">
+  <!-- Información cliente y cotización -->
+  <table width="100%" cellspacing="0" cellpadding="2" border="0" style="margin-bottom: 20px;">
     <tr>
       <td><strong>Cliente:</strong> {{ cotizacion.usuario.username }}</td>
       <td><strong>Correo:</strong> {{ cotizacion.correo }}</td>
@@ -108,54 +39,62 @@
     </tr>
   </table>
 
-  <!-- Detalles de productos -->
+  <!-- Tabla de detalles -->
   <table border="1" cellspacing="0" cellpadding="4" width="100%">
-  <thead>
-    <tr>
-      <th width="5%" style="text-align:center;">#</th>
-      <th width="45%">Descripción</th>
-      <th width="10%" style="text-align:center;">Cantidad</th>
-      <th width="15%" style="text-align:right;">Precio Unitario</th>
-      <th width="10%" style="text-align:right;">Subtotal</th>
-      <th width="7.5%" style="text-align:right;">ITBMS (7%)</th>
-      <th width="7.5%" style="text-align:right;">Total con ITBMS</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for d in detalles %}
-    <tr>
-      <td style="text-align:center;">{{ forloop.counter }}</td>
-      <td>{{ d.producto.nombre }}</td>
-      <td style="text-align:center;">{{ d.cantidad }}</td>
-      <td style="text-align:right;">${{ d.precio_unitario|floatformat:2 }}</td>
-      <td style="text-align:right;">${{ d.subtotal|floatformat:2 }}</td>
-      <td style="text-align:right;">${{ d.itbms|floatformat:2 }}</td>
-      <td style="text-align:right;">${{ d.subtotal_con_itbms|floatformat:2 }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+    <thead>
+      <tr style="background-color:#f0f0f0; font-weight:bold;">
+        <th width="5%" style="text-align:center;">#</th>
+        <th width="45%" style="text-align:left;">Descripción</th>
+        <th width="10%" style="text-align:center;">Cantidad</th>
+        <th width="15%" style="text-align:right;">Precio Unitario</th>
+        <th width="10%" style="text-align:right;">Subtotal</th>
+        <th width="7.5%" style="text-align:right;">ITBMS (7%)</th>
+        <th width="7.5%" style="text-align:right;">Total con ITBMS</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in detalles %}
+      <tr>
+        <td style="text-align:center;">{{ forloop.counter }}</td>
+        <td>{{ d.producto.nombre }}</td>
+        <td style="text-align:center;">{{ d.cantidad }}</td>
+        <td style="text-align:right;">${{ d.precio_unitario|floatformat:2 }}</td>
+        <td style="text-align:right;">${{ d.subtotal|floatformat:2 }}</td>
+        <td style="text-align:right;">${{ d.itbms|floatformat:2 }}</td>
+        <td style="text-align:right;">${{ d.subtotal_con_itbms|floatformat:2 }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 
-
-  <!-- Totales -->
-  <table class="totales">
+  <!-- Tabla de totales alineada con la anterior -->
+  <table border="0" cellspacing="0" cellpadding="4" width="100%" style="margin-top: 10px;">
     <tr>
-      <td>Subtotal:</td>
-      <td>${{ cotizacion.total|floatformat:2 }}</td>
-    </tr>
-    <tr>
-      <td>ITBMS Total (7%):</td>
-      <td>${{ itbms_total|floatformat:2 }}</td>
-    </tr>
-    <tr>
-      <td>Total con ITBMS:</td>
-      <td><strong>${{ total_con_itbms|floatformat:2 }}</strong></td>
+      <td width="80%" style="border:none;"></td>
+      <td width="20%" style="border:none;">
+        <table border="1" cellspacing="0" cellpadding="4" width="100%">
+          <tr>
+            <td style="text-align:left; font-weight:bold;">Subtotal:</td>
+            <td style="text-align:right;">${{ cotizacion.total|floatformat:2 }}</td>
+          </tr>
+          <tr>
+            <td style="text-align:left; font-weight:bold;">ITBMS Total (7%):</td>
+            <td style="text-align:right;">${{ itbms_total|floatformat:2 }}</td>
+          </tr>
+          <tr>
+            <td style="text-align:left; font-weight:bold;">Total con ITBMS:</td>
+            <td style="text-align:right; font-weight:bold;">${{ total_con_itbms|floatformat:2 }}</td>
+          </tr>
+        </table>
+      </td>
     </tr>
   </table>
 
-  <p class="text-right">Gracias por su preferencia.</p>
+  <p style="text-align: right; margin-top: 30px;">Gracias por su preferencia.</p>
+
 </body>
 </html>
+
 
 
 
