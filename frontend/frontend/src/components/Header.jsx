@@ -28,12 +28,19 @@ export default function Header() {
 
   return (
     <header className="bg-background border-b border-gray-200">
-      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 font-bold text-lg text-blue-700">
-          <Icon icon="lucide:droplets" className="text-blue-600 text-2xl" />
-          Hidrotek
-        </Link>
+      <div className="container mx-auto px-6 py-6 flex justify-between items-center min-h-[80px]">
+
+        
+<Link to="/" className="flex items-center gap-4 font-bold text-2xl text-blue-700 h-full">
+  <img
+    src="/LOGO HIDROTEK.jpg"
+    alt="Logo Hidrotek"
+    className="h-[80px] w-auto object-contain"
+  />
+</Link>
+
+
+
 
         {/* Menú central */}
         <nav className="hidden md:flex flex-1 justify-center gap-8 items-center font-medium">

@@ -9,7 +9,6 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -103,24 +102,12 @@ const Login = () => {
                     {isVisible ? (
                       <Icon icon="lucide:eye" className="text-gray-400 text-lg" />
                     ) : (
-                      <Icon
-                        icon="lucide:eye-off"
-                        className="text-gray-400 text-lg"
-                      />
+                      <Icon icon="lucide:eye-off" className="text-gray-400 text-lg" />
                     )}
                   </button>
                 </div>
               </div>
-              <div className="flex items-center justify-between">
-                <label className="flex items-center text-sm">
-                  <input
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="mr-2 accent-blue-600"
-                  />
-                  Recordarme
-                </label>
+              <div className="flex justify-end">
                 <button
                   type="button"
                   className="text-sm text-blue-600 hover:underline"
@@ -137,33 +124,6 @@ const Login = () => {
                 {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
               </button>
             </form>
-
-            {/* Divider */}
-            <div className="flex items-center my-2">
-              <div className="flex-1 h-px bg-gray-200"></div>
-              <span className="px-2 text-gray-500 text-sm">
-                o continuar con
-              </span>
-              <div className="flex-1 h-px bg-gray-200"></div>
-            </div>
-
-            {/* Social Login */}
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                className="border border-gray-200 rounded-md py-2 flex items-center justify-center gap-2 hover:bg-gray-50 transition"
-              >
-                <Icon icon="logos:google-icon" className="text-lg" />
-                Google
-              </button>
-              <button
-                type="button"
-                className="border border-gray-200 rounded-md py-2 flex items-center justify-center gap-2 hover:bg-gray-50 transition"
-              >
-                <Icon icon="logos:facebook" className="text-lg" />
-                Facebook
-              </button>
-            </div>
 
             {/* Register Link */}
             <div className="flex justify-center mt-4">
@@ -185,3 +145,4 @@ const Login = () => {
 };
 
 export default Login;
+

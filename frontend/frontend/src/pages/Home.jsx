@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 
 export default function Home() {
+  
   const navigate = useNavigate();
 
   // Cambia este número por el tuyo real de WhatsApp
@@ -222,7 +223,7 @@ export default function Home() {
       </section>
 
       {/* Preguntas Frecuentes */}
-      <section className="w-full bg-blue-50 py-16">
+      <section id="preguntas-frecuentes" className="w-full bg-blue-50 py-16">
         <div className="max-w-4xl mx-auto px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-blue-800 mb-3">Preguntas Frecuentes</h2>
@@ -290,7 +291,13 @@ export default function Home() {
                 </span>
                 <div>
                   <h4 className="font-medium">Teléfono</h4>
-                  <p className="text-gray-500">+507 770-4700</p>
+                  <a
+  href="tel:+5077704700"
+  className="text-gray-500 hover:underline"
+>
+  +507 770-4700
+</a>
+
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -299,7 +306,13 @@ export default function Home() {
                 </span>
                 <div>
                   <h4 className="font-medium">Email</h4>
-                  <p className="text-gray-500">ventashidrotek@gmail.com</p>
+                  <a
+  href="mailto:ventashidrotek@gmail.com"
+  className="text-gray-500 hover:underline"
+>
+  ventashidrotek@gmail.com
+</a>
+
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -308,7 +321,8 @@ export default function Home() {
                 </span>
                 <div>
                   <h4 className="font-medium">Horario</h4>
-                  <p className="text-gray-500">Lun - Vie: 8:00a.m. - 5:00p.m.</p>
+                  <p className="text-gray-500">Lun - Vie: 8:00a.m. - 5:00p.m. <br />
+                    Sab: 8:00a.m. - 3:30p.m.</p>
                 </div>
               </div>
             </div>

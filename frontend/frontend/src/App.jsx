@@ -7,6 +7,7 @@ import Products from './pages/Products';
 import Contact from './pages/Contact';
 import AboutUs from './pages/AboutUs';
 import DetailPage from './pages/DetailPage';
+import Dashboard from './pages/Dashboard';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route path="/contact" element={<Contact />} />
       <Route path="/about-us" element={<AboutUs />} />
       <Route path="/products/:pk" element={<DetailPage />} />
+      <Route path="/dashboard" element={<Dashboard />} />
       {/* Puedes agregar más rutas según sea necesario */}
     </Routes>
   );
