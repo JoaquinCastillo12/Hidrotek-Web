@@ -48,7 +48,7 @@ export default function footer() {
   <ul className="space-y-2 text-blue-100 text-sm">
     <li>
       <a
-        href="https://wa.me/50765529555?text=Hola%2C%20estoy%20interesado%20en%20el%20servicio%20de%20Instalación"
+        href="https://wa.me/50765258464?text=Hola%2C%20estoy%20interesado%20en%20el%20servicio%20de%20Instalación"
         target="_blank"
         rel="noopener noreferrer"
         className="hover:underline"
@@ -58,7 +58,7 @@ export default function footer() {
     </li>
     <li>
       <a
-        href="https://wa.me/50765529555?text=Hola%2C%20necesito%20información%20sobre%20Mantenimiento"
+        href="https://wa.me/50765258464?text=Hola%2C%20necesito%20información%20sobre%20Mantenimiento"
         target="_blank"
         rel="noopener noreferrer"
         className="hover:underline"
@@ -68,7 +68,7 @@ export default function footer() {
     </li>
     <li>
       <a
-        href="https://wa.me/50765529555?text=Hola%2C%20quisiera%20consultar%20por%20servicio%20de%20Reparación"
+        href="https://wa.me/50765258464?text=Hola%2C%20quisiera%20consultar%20por%20servicio%20de%20Reparación"
         target="_blank"
         rel="noopener noreferrer"
         className="hover:underline"
@@ -78,7 +78,7 @@ export default function footer() {
     </li>
     <li>
       <a
-        href="https://wa.me/50765529555?text=Hola%2C%20estoy%20interesado%20en%20una%20Asesoría%20Técnica"
+        href="https://wa.me/50765258464?text=Hola%2C%20estoy%20interesado%20en%20una%20Asesoría%20Técnica"
         target="_blank"
         rel="noopener noreferrer"
         className="hover:underline"
