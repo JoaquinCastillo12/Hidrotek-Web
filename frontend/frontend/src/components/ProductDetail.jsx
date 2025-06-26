@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useCart } from '../context/CartContext'; // ✅ Importa el contexto
 
 const ProductDetail = () => {
   const { pk } = useParams();
   const [producto, setProducto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState("");
+  const { addToCart } = useCart(); // ✅ Usa el método del contexto
 
   useEffect(() => {
     fetch(`https://hidrotek.onrender.com/api/productos/${pk}/`)
@@ -32,16 +34,8 @@ const ProductDetail = () => {
   }, [pk]);
 
   const handleAddToCart = () => {
-    const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
-    const yaExiste = carrito.find((item) => item.id === producto.id);
-    if (!yaExiste) {
-      carrito.push({ ...producto, cantidad: 1 });
-      localStorage.setItem("carrito", JSON.stringify(carrito));
-      setMensaje("Producto agregado al carrito");
-    } else {
-      setMensaje("Este producto ya está en el carrito");
-    }
-
+    addToCart(producto);
+    setMensaje("Producto agregado al carrito");
     setTimeout(() => setMensaje(""), 3000);
   };
 
@@ -109,6 +103,10 @@ const ProductDetail = () => {
           >
             🛒 Agregar al carrito
           </button>
+
+          {mensaje && (
+            <p className="mt-2 text-green-600 font-medium text-center">{mensaje}</p>
+          )}
         </div>
       </div>
     </div>
@@ -116,7 +114,6 @@ const ProductDetail = () => {
 };
 
 export default ProductDetail;
-
 
 
 

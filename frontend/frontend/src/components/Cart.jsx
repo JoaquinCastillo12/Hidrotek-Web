@@ -1,18 +1,77 @@
 import React from "react";
+import { useCart } from "../context/CartContext";
 
-export default function Cart({ open, onClose, cartItems, onQuantityChange, onRemove, onCotizar }) {
+export default function Cart() {
+  const {
+    cartItems,
+    cartOpen,
+    setCartOpen,
+    changeQuantity,
+    removeFromCart,
+    clearCart
+  } = useCart();
+
   const total = cartItems.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+
+  const handleCotizar = async () => {
+  if (cartItems.length === 0) {
+    alert("Debes tener artículos en el carrito para cotizar.");
+    return;
+  }
+
+  const cotizacion = {
+    detalles: cartItems.map(item => ({
+      producto: item.id,
+      cantidad: item.cantidad,
+      precio_unitario: item.precio
+    }))
+  };
+
+  const token = localStorage.getItem("access");
+
+  try {
+    const res = await fetch("https://hidrotek.onrender.com/api/cotizacion-pdf/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify(cotizacion)
+    });
+
+    if (res.status === 401) {
+      alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
+      setCartOpen(false);
+      clearCart();
+      return;
+    }
+
+    if (res.ok) {
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      alert("¡Cotización enviada!");
+      setCartOpen(false);
+      clearCart();
+    } else {
+      alert("Error al enviar la cotización");
+    }
+  } catch (error) {
+    alert("Error de red al enviar la cotización");
+  }
+};
+
 
   return (
     <div
       className={`fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ${
-        open ? "translate-x-0" : "translate-x-full"
+        cartOpen ? "translate-x-0" : "translate-x-full"
       }`}
       style={{ maxWidth: 350 }}
     >
       <div className="flex justify-between items-center p-4 border-b">
         <h2 className="text-xl font-bold">Carrito de Cotización</h2>
-        <button onClick={onClose} className="text-gray-500 hover:text-blue-600 text-2xl">&times;</button>
+        <button onClick={() => setCartOpen(false)} className="text-gray-500 hover:text-blue-600 text-2xl">&times;</button>
       </div>
       <div className="p-4 flex-1 overflow-y-auto">
         {cartItems.length === 0 ? (
@@ -27,22 +86,22 @@ export default function Cart({ open, onClose, cartItems, onQuantityChange, onRem
                 <div className="flex items-center gap-2 mt-1">
                   <button
                     className="px-2 py-1 bg-blue-100 rounded hover:bg-blue-200"
-                    onClick={() => onQuantityChange(item.id, Math.max(1, item.cantidad - 1))}
+                    onClick={() => changeQuantity(item.id, Math.max(1, item.cantidad - 1))}
                   >-</button>
                   <input
                     type="number"
                     min={1}
                     value={item.cantidad}
-                    onChange={e => onQuantityChange(item.id, Math.max(1, Number(e.target.value)))}
+                    onChange={e => changeQuantity(item.id, Math.max(1, Number(e.target.value)))}
                     className="w-10 text-center border rounded"
                   />
                   <button
                     className="px-2 py-1 bg-blue-100 rounded hover:bg-blue-200"
-                    onClick={() => onQuantityChange(item.id, item.cantidad + 1)}
+                    onClick={() => changeQuantity(item.id, item.cantidad + 1)}
                   >+</button>
                   <button
                     className="ml-2 text-red-500 hover:text-red-700"
-                    onClick={() => onRemove(item.id)}
+                    onClick={() => removeFromCart(item.id)}
                     title="Eliminar"
                   >🗑️</button>
                 </div>
@@ -57,13 +116,18 @@ export default function Cart({ open, onClose, cartItems, onQuantityChange, onRem
           <span>${total.toFixed(2)}</span>
         </div>
         <button
-          className="w-full bg-blue-600 text-white py-2 rounded-md font-semibold hover:bg-blue-700 transition"
-          disabled={cartItems.length === 0}
-          onClick={onCotizar}
-        >
-          Cotizar
-        </button>
+  className={`w-full py-2 rounded-md font-semibold transition 
+    ${cartItems.length === 0 
+      ? "bg-gray-300 text-gray-500 cursor-not-allowed" 
+      : "bg-blue-600 text-white hover:bg-blue-700"}`}
+  disabled={cartItems.length === 0}
+  onClick={handleCotizar}
+>
+  📤 Cotizar
+</button>
+
       </div>
     </div>
   );
 }
+

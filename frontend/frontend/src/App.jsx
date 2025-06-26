@@ -8,9 +8,12 @@ import Contact from './pages/Contact';
 import AboutUs from './pages/AboutUs';
 import DetailPage from './pages/DetailPage';
 import Dashboard from './pages/Dashboard';
+import Cart from './components/Cart';
 
 function App() {
   return (
+    <>
+      <Cart />
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
@@ -22,6 +25,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       {/* Puedes agregar más rutas según sea necesario */}
     </Routes>
+     </>
   );
 }
 

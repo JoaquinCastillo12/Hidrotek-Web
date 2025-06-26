@@ -1,7 +1,10 @@
 import { Icon } from "@iconify/react";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext"; // ✅ Importa el hook del contexto
 
-export default function ProductCard({ product, onAddToCart }) {
+export default function ProductCard({ product }) {
+  const { addToCart } = useCart(); // ✅ Usa la función desde el contexto
+
   const imagenSrc = product.imagen || product.imagen_url || "/no-image.png";
 
   return (
@@ -22,10 +25,11 @@ export default function ProductCard({ product, onAddToCart }) {
       </Link>
 
       <p className="text-gray-500 text-sm mb-3">{product.descripcion}</p>
+
       <div className="flex items-center justify-between mt-auto">
         <span className="text-blue-600 font-bold text-lg">${product.precio}</span>
         <button
-          onClick={() => onAddToCart(product)}
+          onClick={() => addToCart(product)} // ✅ Directamente usando el contexto
           className="bg-blue-600 hover:bg-blue-700 text-white rounded-full p-2 shadow transition flex items-center justify-center"
           title="Agregar al carrito"
         >

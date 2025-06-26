@@ -7,8 +7,9 @@ import SideBarFilter from '../components/SideBarFilter';
 import SearchBar from '../components/SearchBar';
 import ProductList from '../components/ProductList';
 import Footer from '../components/footer';
-import axios from 'axios';
 import Cart from '../components/Cart';
+import axios from 'axios';
+import { useCart } from '../context/CartContext'; // ✅ Importar el contexto
 
 export default function ProductsPage() {
   const location = useLocation();
@@ -22,14 +23,11 @@ export default function ProductsPage() {
   const [categorias, setCategorias] = useState([]);
   const [marcas, setMarcas] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
 
-  // Actualiza el filtro si cambia la URL (por ejemplo, al navegar desde el footer)
+  const { cartItems, addToCart, updateQuantity, removeFromCart, clearCart } = useCart(); // ✅
+
   useEffect(() => {
-    setFilters(prev => ({
-      ...prev,
-      categoria: categoriaParam
-    }));
+    setFilters(prev => ({ ...prev, categoria: categoriaParam }));
     // eslint-disable-next-line
   }, [categoriaParam]);
 
@@ -60,18 +58,12 @@ export default function ProductsPage() {
     setFilteredProducts(result);
   }, [filters, products]);
 
-  // Cuando el usuario cambia el filtro, actualiza el estado y la URL
   const handleFilterChange = (key, value) => {
     setFilters(prev => {
       const newFilters = { ...prev, [key]: value };
-      // Solo actualiza la URL si cambia la categoría
       if (key === 'categoria') {
         const params = new URLSearchParams(location.search);
-        if (value) {
-          params.set('categoria', value);
-        } else {
-          params.delete('categoria');
-        }
+        value ? params.set('categoria', value) : params.delete('categoria');
         navigate({ search: params.toString() }, { replace: true });
       }
       return newFilters;
@@ -82,38 +74,16 @@ export default function ProductsPage() {
     setFilters(prev => ({ ...prev, search: value }));
   };
 
-  const handleAddToCart = product => {
-    setCartOpen(true);
-    setCartItems(prev => {
-      const found = prev.find(item => item.id === product.id);
-      if (found) {
-        return prev.map(item =>
-          item.id === product.id
-            ? { ...item, cantidad: item.cantidad + 1 }
-            : item
-        );
-      }
-      return [...prev, { ...product, cantidad: 1 }];
-    });
-  };
-
-  const handleQuantityChange = (id, cantidad) => {
-    setCartItems(prev =>
-      prev.map(item =>
-        item.id === id ? { ...item, cantidad } : item
-      )
-    );
-  };
-
-  const handleRemove = id => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
+  const handleAddToCart = (product) => {
+    setCartOpen(true); // ✅ abrir el modal
+    addToCart(product); // ✅ usar el contexto
   };
 
   const handleCotizar = async () => {
     const cotizacion = {
       detalles: cartItems.map(item => ({
         producto: item.id,
-        cantidad: item.cantidad,
+        cantidad: item.quantity,
         precio_unitario: item.precio
       }))
     };
@@ -131,10 +101,9 @@ export default function ProductsPage() {
       });
 
       if (res.status === 401) {
-        // El interceptor ya habrá eliminado el token y actualizado el contexto
         alert("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.");
         setCartOpen(false);
-        setCartItems([]);
+        clearCart();
         return;
       }
 
@@ -144,7 +113,7 @@ export default function ProductsPage() {
         window.open(url, '_blank');
         alert("¡Cotización enviada!");
         setCartOpen(false);
-        setCartItems([]);
+        clearCart();
       } else {
         alert("Error al enviar la cotización");
       }
@@ -158,40 +127,24 @@ export default function ProductsPage() {
       <Header />
       <main className="flex-1 w-full max-w-7xl mx-auto px-2 sm:px-4 py-6">
         <div className="flex flex-col md:grid md:grid-cols-5 md:gap-6">
-          {/* Sidebar: arriba en mobile, a la izquierda en desktop */}
           <div className="md:col-span-1 mb-6 md:mb-0">
-          <SideBarFilter
-  categorias={categorias}
-  marcas={marcas}
-  products={products}      // <-- aquí pasas la lista de productos
-  filters={filters}        // <-- aquí pasas el estado de filtros
-  onFilterChange={handleFilterChange}
-/>
+            <SideBarFilter
+              categorias={categorias}
+              marcas={marcas}
+              products={products}
+              filters={filters}
+              onFilterChange={handleFilterChange}
+            />
           </div>
           <div className="md:col-span-4">
             <Breadcrumbs items={["Inicio", "Productos"]} />
             <SearchBar onSearch={handleSearch} />
             <ProductList products={filteredProducts} onAddToCart={handleAddToCart} />
-            {/* Botón flotante para abrir el carrito */}
-            <button
-              className="fixed bottom-6 right-6 bg-blue-600 text-white rounded-full p-4 shadow-lg z-40 hover:bg-blue-700 transition"
-              onClick={() => setCartOpen(true)}
-              title="Ver carrito"
-            >
-              🛒
-            </button>
+            {/* ❌ Botón flotante eliminado */}
           </div>
         </div>
       </main>
       <Footer />
-      <Cart
-        open={cartOpen}
-        onClose={() => setCartOpen(false)}
-        cartItems={cartItems}
-        onQuantityChange={handleQuantityChange}
-        onRemove={handleRemove}
-        onCotizar={handleCotizar}
-      />
     </div>
   );
 }
