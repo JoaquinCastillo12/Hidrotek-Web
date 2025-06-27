@@ -1,140 +1,136 @@
-import { useState, useContext } from 'react';
-import { Menu, X } from 'lucide-react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import { Icon } from "@iconify/react";
-import { useCart } from '../context/CartContext';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import api from '../services/api';
 
-export default function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const { authTokens, logoutUser } = useContext(AuthContext);
-  const isAuthenticated = !!authTokens;
-  const navigate = useNavigate();
-  const location = useLocation();
+export const AuthContext = createContext();
 
-  const { cartItems, setCartOpen } = useCart();
-  const cartCount = cartItems.length;
-
-  const handleLogout = () => {
-    logoutUser();
-    navigate('/');
+export const AuthProvider = ({ children }) => {
+  // Función para validar si el token aún es válido
+  const isTokenValid = (token) => {
+    try {
+      const { exp } = jwtDecode(token);
+      return Date.now() < exp * 1000; // compara en milisegundos
+    } catch {
+      return false;
+    }
   };
 
-  const isActive = (path) => location.pathname === path;
+  // Inicialización del estado validando los tokens
+  const [authTokens, setAuthTokens] = useState(() => {
+    const token = localStorage.getItem('access');
+    return token && isTokenValid(token) ? token : null;
+  });
+
+  const [refreshToken, setRefreshToken] = useState(() => {
+    const token = localStorage.getItem('refresh');
+    return token && isTokenValid(token) ? token : null;
+  });
+
+  const [user, setUser] = useState(() => {
+    const token = localStorage.getItem('access');
+    if (token && isTokenValid(token)) {
+      return localStorage.getItem('user');
+    }
+    return null;
+  });
+
+  const [lastActivity, setLastActivity] = useState(Date.now());
+
+  // Guardar en localStorage
+  useEffect(() => {
+    authTokens ? localStorage.setItem('access', authTokens) : localStorage.removeItem('access');
+  }, [authTokens]);
+
+  useEffect(() => {
+    refreshToken ? localStorage.setItem('refresh', refreshToken) : localStorage.removeItem('refresh');
+  }, [refreshToken]);
+
+  useEffect(() => {
+    user ? localStorage.setItem('user', user) : localStorage.removeItem('user');
+  }, [user]);
+
+  // Detectar actividad del usuario
+  useEffect(() => {
+    const updateActivity = () => setLastActivity(Date.now());
+
+    window.addEventListener('mousemove', updateActivity);
+    window.addEventListener('keydown', updateActivity);
+    window.addEventListener('click', updateActivity);
+    window.addEventListener('scroll', updateActivity);
+
+    return () => {
+      window.removeEventListener('mousemove', updateActivity);
+      window.removeEventListener('keydown', updateActivity);
+      window.removeEventListener('click', updateActivity);
+      window.removeEventListener('scroll', updateActivity);
+    };
+  }, []);
+
+  const logoutUser = useCallback(() => {
+    setAuthTokens(null);
+    setRefreshToken(null);
+    setUser(null);
+    localStorage.removeItem('access');
+    localStorage.removeItem('refresh');
+    localStorage.removeItem('user');
+  }, []);
+
+  // Verificar al inicio si el token es inválido (refuerzo)
+  useEffect(() => {
+    if (!authTokens || !isTokenValid(authTokens)) {
+      logoutUser();
+    }
+  }, []);
+
+  // Refrescar el token automáticamente si está activo
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!authTokens || !refreshToken) return;
+
+      try {
+        const { exp } = jwtDecode(authTokens);
+        const now = Date.now() / 1000;
+        const expiresIn = exp - now;
+        const inactiveSeconds = (Date.now() - lastActivity) / 1000;
+
+        if (inactiveSeconds >= 300) {
+          logoutUser(); // inactivo más de 5 minutos
+        } else if (expiresIn < 60) {
+          // Refrescar token si faltan menos de 60 segundos
+          api
+            .post('api/token/refresh/', { refresh: refreshToken })
+            .then(res => {
+              setAuthTokens(res.data.access);
+            })
+            .catch(() => {
+              logoutUser();
+            });
+        }
+      } catch {
+        logoutUser();
+      }
+    }, 30000); // cada 30 segundos
+
+    return () => clearInterval(interval);
+  }, [authTokens, refreshToken, lastActivity, logoutUser]);
+
+  const loginUser = async (username, password) => {
+    try {
+      const res = await api.post('login/', { username, password });
+      setAuthTokens(res.data.access);
+      setRefreshToken(res.data.refresh);
+      setUser(username);
+      setLastActivity(Date.now());
+      return true;
+    } catch {
+      return false;
+    }
+  };
 
   return (
-    <header className="bg-background border-b border-gray-200">
-      <div className="container mx-auto px-6 py-6 flex justify-between items-center min-h-[80px]">
-
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-4 font-bold text-2xl text-blue-700 h-full">
-          <img
-            src="/LOGO HIDROTEK.jpg"
-            alt="Logo Hidrotek"
-            className="h-[80px] w-auto object-contain"
-          />
-        </Link>
-
-        {/* Menú de navegación */}
-        <nav className="hidden md:flex flex-1 justify-center gap-8 items-center font-medium">
-          <Link to="/" className={`${isActive("/") ? "text-blue-700 font-semibold underline underline-offset-4" : "text-gray-700 hover:text-blue-700"} transition`}>
-            Inicio
-          </Link>
-          <Link to="/products" className={`${isActive("/products") ? "text-blue-700 font-semibold underline underline-offset-4" : "text-gray-700 hover:text-blue-700"} transition`}>
-            Productos
-          </Link>
-          <Link to="/about-us" className={`${isActive("/about-us") ? "text-blue-700 font-semibold underline underline-offset-4" : "text-gray-700 hover:text-blue-700"} transition`}>
-            Nosotros
-          </Link>
-          <Link to="/contact" className={`${isActive("/contact") ? "text-blue-700 font-semibold underline underline-offset-4" : "text-gray-700 hover:text-blue-700"} transition`}>
-            Contacto
-          </Link>
-        </nav>
-
-        {/* Carrito y sesión */}
-        <div className="hidden md:flex gap-4 items-center ml-4">
-          <button
-            onClick={() => setCartOpen(true)}
-            className="relative flex items-center"
-            title="Ver carrito"
-          >
-            <Icon icon="lucide:shopping-cart" className="text-2xl text-blue-700" />
-            <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full px-2 py-0.5 font-bold">
-              {cartCount}
-            </span>
-          </button>
-
-          {!isAuthenticated ? (
-            <>
-              <Link to="/login" className="bg-white text-blue-600 px-4 py-2 rounded-md font-medium shadow hover:bg-blue-50 transition">
-                Iniciar Sesión
-              </Link>
-              <Link to="/register" className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium shadow hover:bg-blue-700 transition">
-                Registrarse
-              </Link>
-            </>
-          ) : (
-            <button
-              onClick={handleLogout}
-              className="bg-red-600 text-white px-4 py-2 rounded-md font-medium shadow hover:bg-red-700 transition"
-            >
-              Cerrar Sesión
-            </button>
-          )}
-        </div>
-
-        {/* Menú móvil */}
-        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-blue-700">
-          {menuOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
-      </div>
-
-      {menuOpen && (
-        <div className="md:hidden bg-white px-6 pb-4 space-y-4 text-blue-700 font-medium shadow">
-          <Link to="/" className={`${isActive("/") ? "text-blue-700 font-semibold underline underline-offset-4" : "text-gray-700 hover:text-blue-700"} block transition`}>
-            Inicio
-          </Link>
-          <Link to="/products" className={`${isActive("/products") ? "text-blue-700 font-semibold underline underline-offset-4" : "text-gray-700 hover:text-blue-700"} block transition`}>
-            Productos
-          </Link>
-          <Link to="/about-us" className={`${isActive("/about-us") ? "text-blue-700 font-semibold underline underline-offset-4" : "text-gray-700 hover:text-blue-700"} block transition`}>
-            Nosotros
-          </Link>
-          <Link to="/contact" className={`${isActive("/contact") ? "text-blue-700 font-semibold underline underline-offset-4" : "text-gray-700 hover:text-blue-700"} block transition`}>
-            Contacto
-          </Link>
-
-          <button
-            onClick={() => setCartOpen(true)}
-            className="flex items-center gap-2 relative"
-            title="Ver carrito"
-          >
-            <Icon icon="lucide:shopping-cart" className="text-xl" />
-            <span className="absolute -top-1 -right-4 bg-blue-600 text-white text-xs rounded-full px-2 py-0.5 font-bold">
-              {cartCount}
-            </span>
-          </button>
-
-          {!isAuthenticated ? (
-            <>
-              <Link to="/login" className="block bg-blue-50 text-blue-700 px-4 py-2 rounded-md shadow">
-                Iniciar Sesión
-              </Link>
-              <Link to="/register" className="block bg-blue-600 text-white px-4 py-2 rounded-md shadow">
-                Registrarse
-              </Link>
-            </>
-          ) : (
-            <button
-              onClick={handleLogout}
-              className="block w-full bg-red-600 text-white px-4 py-2 rounded-md shadow"
-            >
-              Cerrar Sesión
-            </button>
-          )}
-        </div>
-      )}
-    </header>
+    <AuthContext.Provider value={{ authTokens, user, loginUser, logoutUser }}>
+      {children}
+    </AuthContext.Provider>
   );
-}
+};
 
