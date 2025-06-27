@@ -73,6 +73,11 @@ class ChangePasswordSerializer(serializers.Serializer):
 #Serializers de productos
 
 
+# serializers.py
+
+from rest_framework import serializers
+from .models import Producto
+
 class ProductoDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
@@ -85,27 +90,26 @@ class ProductoDetailSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
 
-        # Imagen desde Cloudinary
+        # Imagen
         representation['imagen'] = instance.imagen.url if instance.imagen else None
 
-        # Mostrar nombre de marca y categoría
+        # Marca y categoría
         representation['marca'] = instance.marca.nombre if instance.marca else None
         representation['categoria'] = instance.categoria.nombre if instance.categoria else None
 
-        # Características: lista de descripciones
+        # Características
         representation['caracteristicas'] = [
             c.descripcion for c in instance.caracteristicas.all()
         ]
 
-        # Ficha técnica: usar URL del backend para servir el PDF
+        # URL de ficha técnica (Django view, no Cloudinary directa)
         if instance.ficha_tecnica:
-            ficha_id = instance.ficha_tecnica.id
-            ficha_url = reverse('descargar_ficha', args=[ficha_id])  # Asegúrate que el name en urls.py sea 'descargar_ficha'
-            representation['ficha_tecnica_url'] = ficha_url
+            representation['ficha_tecnica_url'] = f"/ficha-tecnica/{instance.ficha_tecnica.id}/descargar/"
         else:
             representation['ficha_tecnica_url'] = None
 
         return representation
+
 
     
 class ProductoListSerializer(serializers.ModelSerializer):

@@ -97,26 +97,31 @@ class ProductoDeleteView(generics.DestroyAPIView):
     serializer_class = ProductoDeleteSerializer
     permission_classes = [permissions.IsAdminUser]
     
-import requests
+# views.py
+
 from django.http import HttpResponse
+import requests
+from .models import FichaTecnica
 
 def descargar_pdf(request, ficha_id):
-    ficha = FichaTecnica.objects.get(id=ficha_id)
-    pdf_url = ficha.archivo_pdf.url  # URL raw en Cloudinary
+    try:
+        ficha = FichaTecnica.objects.get(id=ficha_id)
+        pdf_url = ficha.archivo_pdf.url  # Esto apunta a Cloudinary
 
-    # Descargar el archivo PDF desde Cloudinary
-    response = requests.get(pdf_url)
-    if response.status_code == 200:
-        # Crear respuesta para enviar el PDF al navegador
-        return HttpResponse(
-            response.content,
-            content_type='application/pdf',
-            headers={
-                'Content-Disposition': f'inline; filename="{ficha.nombre}.pdf"'
-            }
-        )
-    else:
-        return HttpResponse("Archivo no encontrado", status=404)
+        response = requests.get(pdf_url)
+        if response.status_code == 200:
+            return HttpResponse(
+                response.content,
+                content_type='application/pdf',
+                headers={
+                    'Content-Disposition': f'inline; filename="{ficha.nombre}.pdf"'
+                }
+            )
+        else:
+            return HttpResponse("Archivo no encontrado", status=404)
+    except Exception as e:
+        return HttpResponse(f"Error interno: {str(e)}", status=500)
+
 
 #Apis de cotizaciones
         
