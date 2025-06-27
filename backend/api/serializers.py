@@ -4,6 +4,7 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import Producto, Cotizacion, DetalleCotizacion, Marca, Categoria, ContactMessage
 from cloudinary.utils import cloudinary_url
+from django.urls import reverse
 
 
 #Serializer de usuarios
@@ -96,25 +97,15 @@ class ProductoDetailSerializer(serializers.ModelSerializer):
             c.descripcion for c in instance.caracteristicas.all()
         ]
 
-        # Ficha técnica: link al PDF desde Cloudinary con descarga forzada
-        if instance.ficha_tecnica and instance.ficha_tecnica.archivo_pdf:
-            public_id = instance.ficha_tecnica.archivo_pdf.public_id
-            version = instance.ficha_tecnica.archivo_pdf.version
-            # Asegúrate que el public_id incluya la extensión .pdf
-            if not public_id.endswith('.pdf'):
-                public_id += '.pdf'
-            url, _ = cloudinary_url(
-                public_id,
-                resource_type='raw',
-                version=version,
-                flags='attachment'  # Esto fuerza la descarga
-            )
-            representation['ficha_tecnica'] = url
+        # Ficha técnica: usar URL del backend para servir el PDF
+        if instance.ficha_tecnica:
+            ficha_id = instance.ficha_tecnica.id
+            ficha_url = reverse('descargar_ficha', args=[ficha_id])  # Asegúrate que el name en urls.py sea 'descargar_ficha'
+            representation['ficha_tecnica_url'] = ficha_url
         else:
-            representation['ficha_tecnica'] = None
+            representation['ficha_tecnica_url'] = None
 
         return representation
-
 
     
 class ProductoListSerializer(serializers.ModelSerializer):
