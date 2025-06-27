@@ -16,7 +16,7 @@ class Categoria(models.Model):
 
 class FichaTecnica(models.Model):
     nombre = models.CharField(max_length=255)
-    archivo_pdf = CloudinaryField('ficha', resource_type='auto')
+    archivo_pdf = CloudinaryField('ficha', resource_type='raw')
 
     def __str__(self):
         return self.nombre
