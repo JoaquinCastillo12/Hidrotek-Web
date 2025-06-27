@@ -14,12 +14,14 @@ class Categoria(models.Model):
     def __str__(self):
         return self.nombre
 
+
 class FichaTecnica(models.Model):
     nombre = models.CharField(max_length=255)
-    archivo_pdf = CloudinaryField('ficha', resource_type='raw')
+    archivo_pdf = models.BinaryField()  # Guarda el contenido binario directamente
 
     def __str__(self):
         return self.nombre
+
     
 class Caracteristica(models.Model):
     descripcion = models.CharField(max_length=255)

@@ -106,28 +106,18 @@ from .models import FichaTecnica
 def descargar_pdf(request, ficha_id):
     try:
         ficha = FichaTecnica.objects.get(id=ficha_id)
-    except FichaTecnica.DoesNotExist:
-        raise Http404("Ficha técnica no encontrada")
-
-    if not ficha.archivo_pdf:
-        raise Http404("No hay archivo PDF asociado a esta ficha")
-
-    pdf_url = ficha.archivo_pdf.url
-
-    try:
-        response = requests.get(pdf_url)
-        if response.status_code == 200:
+        if ficha.archivo_pdf:
             return HttpResponse(
-                response.content,
+                ficha.archivo_pdf,
                 content_type='application/pdf',
                 headers={
                     'Content-Disposition': f'inline; filename="{ficha.nombre}.pdf"'
                 }
             )
         else:
-            raise Http404("Archivo no disponible en Cloudinary")
-    except Exception as e:
-        raise Http404(f"Error al obtener el archivo: {e}")
+            return HttpResponse("Archivo no disponible", status=404)
+    except FichaTecnica.DoesNotExist:
+        raise Http404("Ficha técnica no encontrada")
 
 
 

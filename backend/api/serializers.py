@@ -78,6 +78,10 @@ class ChangePasswordSerializer(serializers.Serializer):
 from rest_framework import serializers
 from .models import Producto
 
+from django.urls import reverse
+
+from django.urls import reverse
+
 class ProductoDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Producto
@@ -85,30 +89,24 @@ class ProductoDetailSerializer(serializers.ModelSerializer):
             'id', 'nombre', 'descripcion', 'precio', 'stock', 'imagen',
             'marca', 'categoria', 'caracteristicas', 'ficha_tecnica'
         ]
-        read_only_fields = ['id']
 
     def to_representation(self, instance):
-        representation = super().to_representation(instance)
+        rep = super().to_representation(instance)
+        rep['imagen'] = instance.imagen.url if instance.imagen else None
+        rep['marca'] = instance.marca.nombre if instance.marca else None
+        rep['categoria'] = instance.categoria.nombre if instance.categoria else None
+        rep['caracteristicas'] = [c.descripcion for c in instance.caracteristicas.all()]
 
-        # Imagen
-        representation['imagen'] = instance.imagen.url if instance.imagen else None
-
-        # Marca y categoría
-        representation['marca'] = instance.marca.nombre if instance.marca else None
-        representation['categoria'] = instance.categoria.nombre if instance.categoria else None
-
-        # Características
-        representation['caracteristicas'] = [
-            c.descripcion for c in instance.caracteristicas.all()
-        ]
-
-        # URL de ficha técnica (Django view, no Cloudinary directa)
-        if instance.ficha_tecnica:
-            representation['ficha_tecnica_url'] = f"/ficha-tecnica/{instance.ficha_tecnica.id}/descargar/"
+        # URL a la vista de descarga del PDF
+        request = self.context.get('request')
+        if instance.ficha_tecnica and request:
+            ficha_url = reverse('descargar_pdf', args=[instance.ficha_tecnica.id])
+            rep['ficha_tecnica'] = request.build_absolute_uri(ficha_url)
         else:
-            representation['ficha_tecnica_url'] = None
+            rep['ficha_tecnica'] = None
 
-        return representation
+        return rep
+
 
 
     

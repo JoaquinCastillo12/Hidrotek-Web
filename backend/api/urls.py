@@ -21,5 +21,5 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('prueba-pdf/', views.prueba_pdf, name='prueba_pdf'),
     path("ficha/<path:ruta>/", ver_ficha_tecnica, name="ver_ficha_tecnica"),
-     path('ficha-tecnica/<int:ficha_id>/descargar/', descargar_pdf, name='descargar_pdf'),
+    path('ficha-tecnica/<int:ficha_id>/descargar/', descargar_pdf, name='descargar_pdf'),
 ]
