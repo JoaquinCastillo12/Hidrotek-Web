@@ -17,10 +17,11 @@ class Categoria(models.Model):
 
 class FichaTecnica(models.Model):
     nombre = models.CharField(max_length=255)
-    archivo_pdf = models.BinaryField()  # Guarda el contenido binario directamente
+    archivo_pdf = models.BinaryField(editable=True)  # 👈 Esto habilita el uso en formularios
 
     def __str__(self):
         return self.nombre
+
 
     
 class Caracteristica(models.Model):
