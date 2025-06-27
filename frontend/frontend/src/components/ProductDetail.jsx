@@ -87,7 +87,7 @@ const ProductDetail = () => {
 {/* Botón de Ficha Técnica */}
 {producto.ficha_tecnica_url && (
   <a
-    href={`https://hidrotek.onrender.com${producto.ficha_tecnica_url}`}
+    href={`https://hidrotek.onrender.com/api${producto.ficha_tecnica_url}`}
     target="_blank"
     rel="noopener noreferrer"
     className="inline-block bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition mt-4"

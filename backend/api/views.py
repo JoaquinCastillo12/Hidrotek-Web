@@ -99,15 +99,22 @@ class ProductoDeleteView(generics.DestroyAPIView):
     
 # views.py
 
-from django.http import HttpResponse
 import requests
+from django.http import HttpResponse, Http404
 from .models import FichaTecnica
 
 def descargar_pdf(request, ficha_id):
     try:
         ficha = FichaTecnica.objects.get(id=ficha_id)
-        pdf_url = ficha.archivo_pdf.url  # Esto apunta a Cloudinary
+    except FichaTecnica.DoesNotExist:
+        raise Http404("Ficha técnica no encontrada")
 
+    if not ficha.archivo_pdf:
+        raise Http404("No hay archivo PDF asociado a esta ficha")
+
+    pdf_url = ficha.archivo_pdf.url
+
+    try:
         response = requests.get(pdf_url)
         if response.status_code == 200:
             return HttpResponse(
@@ -118,9 +125,10 @@ def descargar_pdf(request, ficha_id):
                 }
             )
         else:
-            return HttpResponse("Archivo no encontrado", status=404)
+            raise Http404("Archivo no disponible en Cloudinary")
     except Exception as e:
-        return HttpResponse(f"Error interno: {str(e)}", status=500)
+        raise Http404(f"Error al obtener el archivo: {e}")
+
 
 
 #Apis de cotizaciones
