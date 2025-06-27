@@ -88,14 +88,14 @@ const ProductDetail = () => {
   <div>
     <a
       href={producto.ficha_tecnica}
-      target="_blank"
-      rel="noopener noreferrer"
+      download={`FichaTecnica_${producto.nombre}.pdf`}
       className="inline-block bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition mt-4"
     >
-      📄 Ver ficha técnica (PDF)
+      📄 Descargar ficha técnica (PDF)
     </a>
   </div>
 )}
+
 
 
 

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from .serializers import RegisterSerializer 
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .models import Producto, Marca, Categoria, Cotizacion, DetalleCotizacion, ContactMessage
+from .models import Producto, Marca, Categoria, Cotizacion, DetalleCotizacion, ContactMessage, FichaTecnica
 from rest_framework import generics
 from rest_framework.response import Response
 from django.shortcuts import render
@@ -97,6 +97,27 @@ class ProductoDeleteView(generics.DestroyAPIView):
     serializer_class = ProductoDeleteSerializer
     permission_classes = [permissions.IsAdminUser]
     
+import requests
+from django.http import HttpResponse
+
+def descargar_pdf(request, ficha_id):
+    ficha = FichaTecnica.objects.get(id=ficha_id)
+    pdf_url = ficha.archivo_pdf.url  # URL raw en Cloudinary
+
+    # Descargar el archivo PDF desde Cloudinary
+    response = requests.get(pdf_url)
+    if response.status_code == 200:
+        # Crear respuesta para enviar el PDF al navegador
+        return HttpResponse(
+            response.content,
+            content_type='application/pdf',
+            headers={
+                'Content-Disposition': f'inline; filename="{ficha.nombre}.pdf"'
+            }
+        )
+    else:
+        return HttpResponse("Archivo no encontrado", status=404)
+
 #Apis de cotizaciones
         
 class CotizacionCreateView(generics.CreateAPIView):
