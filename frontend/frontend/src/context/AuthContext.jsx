@@ -5,9 +5,35 @@ import api from '../services/api';
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [authTokens, setAuthTokens] = useState(() => localStorage.getItem('access'));
-  const [refreshToken, setRefreshToken] = useState(() => localStorage.getItem('refresh'));
-  const [user, setUser] = useState(() => localStorage.getItem('user'));
+  // Función para validar si el token aún es válido
+  const isTokenValid = (token) => {
+    try {
+      const { exp } = jwtDecode(token);
+      return Date.now() < exp * 1000; // compara en milisegundos
+    } catch {
+      return false;
+    }
+  };
+
+  // Inicialización del estado validando los tokens
+  const [authTokens, setAuthTokens] = useState(() => {
+    const token = localStorage.getItem('access');
+    return token && isTokenValid(token) ? token : null;
+  });
+
+  const [refreshToken, setRefreshToken] = useState(() => {
+    const token = localStorage.getItem('refresh');
+    return token && isTokenValid(token) ? token : null;
+  });
+
+  const [user, setUser] = useState(() => {
+    const token = localStorage.getItem('access');
+    if (token && isTokenValid(token)) {
+      return localStorage.getItem('user');
+    }
+    return null;
+  });
+
   const [lastActivity, setLastActivity] = useState(Date.now());
 
   // Guardar en localStorage
@@ -49,6 +75,13 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
   }, []);
 
+  // Verificar al inicio si el token es inválido (refuerzo)
+  useEffect(() => {
+    if (!authTokens || !isTokenValid(authTokens)) {
+      logoutUser();
+    }
+  }, []);
+
   // Refrescar el token automáticamente si está activo
   useEffect(() => {
     const interval = setInterval(() => {
@@ -60,11 +93,10 @@ export const AuthProvider = ({ children }) => {
         const expiresIn = exp - now;
         const inactiveSeconds = (Date.now() - lastActivity) / 1000;
 
-        // Si lleva inactivo más de 5 minutos (300s)
         if (inactiveSeconds >= 300) {
-          logoutUser();
+          logoutUser(); // inactivo más de 5 minutos
         } else if (expiresIn < 60) {
-          // Refrescar si faltan menos de 60s y está activo
+          // Refrescar token si faltan menos de 60 segundos
           api
             .post('api/token/refresh/', { refresh: refreshToken })
             .then(res => {
@@ -74,7 +106,7 @@ export const AuthProvider = ({ children }) => {
               logoutUser();
             });
         }
-      } catch (err) {
+      } catch {
         logoutUser();
       }
     }, 30000); // cada 30 segundos

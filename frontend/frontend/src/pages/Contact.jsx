@@ -46,7 +46,7 @@ export default function Contact() {
                 </span>
                 <div>
                   <h4 className="font-medium">Dirección</h4>
-                  <a
+                   <a
       href="https://maps.app.goo.gl/hqeKLbiRZSmM8UcE9"
       target="_blank"
       rel="noopener noreferrer"
@@ -62,7 +62,13 @@ export default function Contact() {
                 </span>
                 <div>
                   <h4 className="font-medium">Teléfono</h4>
-                  <p className="text-gray-500">770-4700</p>
+                  <a
+  href="tel:+5077704700"
+  className="text-gray-500 hover:underline"
+>
+  +507 770-4700
+</a>
+
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -71,7 +77,13 @@ export default function Contact() {
                 </span>
                 <div>
                   <h4 className="font-medium">Email</h4>
-                  <p className="text-gray-500">ventashidrotek@gmail.com</p>
+                  <a
+  href="mailto:ventashidrotek@gmail.com"
+  className="text-gray-500 hover:underline"
+>
+  ventashidrotek@gmail.com
+</a>
+
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -80,7 +92,8 @@ export default function Contact() {
                 </span>
                 <div>
                   <h4 className="font-medium">Horario</h4>
-                  <p className="text-gray-500">Lun - Vie: 8:00a.m. - 5:00p.m.</p>
+                  <p className="text-gray-500">Lun - Vie: 8:00a.m. - 5:00p.m. <br />
+                    Sab: 8:00a.m. - 3:30p.m.</p>
                 </div>
               </div>
             </div>
@@ -104,18 +117,17 @@ export default function Contact() {
           </div>
           <div className="flex-1 bg-blue-50 rounded-xl shadow-md p-6">
             <h3 className="text-xl font-semibold mb-4">Envíenos un mensaje</h3>
-            <form className="space-y-4" onSubmit={handleSubmit}>
+            <form className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input name="nombre" value={form.nombre} onChange={handleChange} className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su nombre" />
-                <input name="apellido" value={form.apellido} onChange={handleChange} className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su apellido" />
+                <input className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su nombre" />
+                <input className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su apellido" />
               </div>
-              <input name="email" value={form.email} onChange={handleChange} className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="correo@ejemplo.com" type="email" />
-              <input name="telefono" value={form.telefono} onChange={handleChange} className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su número telefónico" />
-              <textarea name="mensaje" value={form.mensaje} onChange={handleChange} className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="¿Cómo podemos ayudarle?" rows={4} />
+              <input className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="correo@ejemplo.com" type="email" />
+              <input className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su número telefónico" />
+              <textarea className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="¿Cómo podemos ayudarle?" rows={4} />
               <button className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium w-full hover:bg-blue-700 transition" type="submit">
                 Enviar Mensaje
               </button>
-              {enviado && <p className="text-green-600">¡Mensaje enviado correctamente!</p>}
             </form>
           </div>
         </div>
