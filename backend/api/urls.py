@@ -3,7 +3,7 @@
 from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 from . import views
-from .views import RegisterView, LoginView, ProductoListView, ProductoDetailView, HomeView, ProductoUpdateView, ProductoCreateView, MarcaListView, CategoriaListView, ContactMessageCreateView, ContactMessageListView, ContactMessageCreateView, CotizacionPDFCreateView, ver_ficha_tecnica
+from .views import RegisterView, LoginView, ProductoListView, ProductoDetailView, HomeView, ProductoUpdateView, ProductoCreateView, MarcaListView, CategoriaListView, ContactMessageCreateView, ContactMessageListView, ContactMessageCreateView, CotizacionPDFCreateView, ver_ficha_tecnica, descargar_pdf
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
@@ -21,4 +21,5 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('prueba-pdf/', views.prueba_pdf, name='prueba_pdf'),
     path("ficha/<path:ruta>/", ver_ficha_tecnica, name="ver_ficha_tecnica"),
+     path('ficha-tecnica/<int:ficha_id>/descargar/', descargar_pdf, name='descargar_pdf'),
 ]

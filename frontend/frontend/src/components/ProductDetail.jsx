@@ -84,17 +84,17 @@ const ProductDetail = () => {
           )}
 
           {/* Botón de Ficha Técnica */}
-          {producto.ficha_tecnica && (
-  <div>
-    <a
-      href={producto.ficha_tecnica}
-      download={`FichaTecnica_${producto.nombre}.pdf`}
-      className="inline-block bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition mt-4"
-    >
-      📄 Descargar ficha técnica (PDF)
-    </a>
-  </div>
+          {producto.ficha_tecnica_id && (
+  <a
+    href={`https://hidrotek.onrender.com/ficha-tecnica/${producto.ficha_tecnica_id}/descargar/`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md transition mt-4"
+  >
+    📄 Ver ficha técnica (PDF)
+  </a>
 )}
+
 
 
 
