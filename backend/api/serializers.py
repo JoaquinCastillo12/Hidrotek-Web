@@ -87,7 +87,7 @@ class ProductoDetailSerializer(serializers.ModelSerializer):
         model = Producto
         fields = [
             'id', 'nombre', 'descripcion', 'precio', 'stock', 'imagen',
-            'marca', 'categoria', 'caracteristicas', 'ficha_tecnica'
+            'marca', 'categoria', 'caracteristicas', 'ficha_tecnica', 'imagen_url'
         ]
 
     def to_representation(self, instance):

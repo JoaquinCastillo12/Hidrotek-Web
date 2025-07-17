@@ -30,7 +30,7 @@ export default function Cart() {
   const token = localStorage.getItem("access");
 
   try {
-    const res = await fetch("https://hidrotek.onrender.com/api/cotizacion-pdf/", {
+    const res = await fetch("http://45.67.217.187:8000/api/cotizacion-pdf/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -79,7 +79,11 @@ export default function Cart() {
         ) : (
           cartItems.map((item) => (
             <div key={item.id} className="flex items-center gap-3 mb-4 border-b pb-3">
-              <img src={item.imagen} alt={item.nombre} className="w-16 h-16 object-cover rounded" />
+              <img
+  src={item.imagen || item.imagen_url || "/no-image.png"}
+  alt={item.nombre}
+  className="w-16 h-16 object-cover rounded"
+/>
               <div className="flex-1">
                 <div className="font-semibold">{item.nombre}</div>
                 <div className="text-blue-700 font-bold">${(item.precio * item.cantidad).toFixed(2)}</div>

@@ -4,3 +4,6 @@ db.slqlite
 api/__pycache__
 main/__pycache__
 staticfiles
+api/migrations
+main/migrations
+api_hidrotek_latest.tar

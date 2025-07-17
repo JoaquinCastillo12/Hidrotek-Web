@@ -19,7 +19,7 @@ export default function Contact() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    await fetch("https://hidrotek.onrender.com/api/contact-message/", {
+    await fetch("http://45.67.217.187:8000/api/contact-message/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),

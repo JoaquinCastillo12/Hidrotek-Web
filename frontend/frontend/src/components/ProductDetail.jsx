@@ -10,7 +10,7 @@ const ProductDetail = () => {
   const { addToCart } = useCart(); // ✅ Usa el método del contexto
 
   useEffect(() => {
-    fetch(`https://hidrotek.onrender.com/api/productos/${pk}/`)
+    fetch(`http://45.67.217.187:8000/api/productos/${pk}/`)
       .then((res) => {
         if (!res.ok) throw new Error('Error al obtener el producto');
         return res.json();
@@ -47,13 +47,11 @@ const ProductDetail = () => {
       <div className="flex flex-col md:flex-row gap-8">
         {/* Imagen */}
         <div className="md:w-3/4 flex justify-center items-start">
-          {producto.imagen && (
-            <img
-              src={producto.imagen}
-              alt={producto.nombre}
-              className="w-90 h-auto object-cover rounded-md"
-            />
-          )}
+          <img
+            src={producto.imagen || producto.imagen_url || "/no-image.png"}
+            alt={producto.nombre}
+            className="w-90 h-auto object-cover rounded-md"
+          />
         </div>
 
         {/* Detalles */}

@@ -32,7 +32,7 @@ export default function ProductsPage() {
   }, [categoriaParam]);
 
   useEffect(() => {
-    axios.get('https://hidrotek.onrender.com/api/productos/')
+    axios.get('http://45.67.217.187:8000/api/productos/')
       .then(response => {
         setProducts(response.data);
         const uniqueCategorias = [...new Set(response.data.map(p => p.categoria))];
@@ -91,7 +91,7 @@ export default function ProductsPage() {
     const token = localStorage.getItem("access");
 
     try {
-      const res = await fetch("https://hidrotek.onrender.com/api/cotizacion-pdf/", {
+      const res = await fetch("http://0.0.0.0:8000/api/cotizacion-pdf/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

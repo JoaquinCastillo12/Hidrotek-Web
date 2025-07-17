@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://hidrotek.onrender.com/api/',
+  baseURL: 'http://45.67.217.187:8000/api', // Cambia esto según tu configuración
   headers: {
     'Content-Type': 'application/json',
   },
