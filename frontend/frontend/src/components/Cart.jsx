@@ -30,7 +30,7 @@ export default function Cart() {
   const token = localStorage.getItem("access");
 
   try {
-    const res = await fetch("http://45.67.217.187:8000/api/cotizacion-pdf/", {
+    const res = await fetch("https://apigo.online/api/cotizacion-pdf/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

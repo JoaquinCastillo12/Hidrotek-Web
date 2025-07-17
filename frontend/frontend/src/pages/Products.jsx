@@ -32,7 +32,7 @@ export default function ProductsPage() {
   }, [categoriaParam]);
 
   useEffect(() => {
-    axios.get('http://45.67.217.187:8000/api/productos/')
+    axios.get('https://apigo.online/api/productos/')
       .then(response => {
         setProducts(response.data);
         const uniqueCategorias = [...new Set(response.data.map(p => p.categoria))];

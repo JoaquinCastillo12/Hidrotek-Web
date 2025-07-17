@@ -10,7 +10,7 @@ const ProductDetail = () => {
   const { addToCart } = useCart(); // ✅ Usa el método del contexto
 
   useEffect(() => {
-    fetch(`http://45.67.217.187:8000/api/productos/${pk}/`)
+    fetch(`https://apigo.online/api/productos/${pk}/`)
       .then((res) => {
         if (!res.ok) throw new Error('Error al obtener el producto');
         return res.json();
