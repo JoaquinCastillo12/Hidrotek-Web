@@ -10,6 +10,37 @@ import { useNavigate } from "react-router-dom";
 export default function Home() {
   
   const navigate = useNavigate();
+  const [nombre, setNombre] = useState('');
+  const [email, setEmail] = useState('');
+  const [telefono, setTelefono] = useState('');
+  const [mensaje, setMensaje] = useState('');
+
+  // Estado para mostrar feedback al usuario
+  const [status, setStatus] = useState(null); // null | "enviando" | "exito" | "error"
+
+  const [form, setForm] = useState({
+      nombre: "",
+      apellido: "",
+      email: "",
+      telefono: "",
+      mensaje: "",
+    });
+    const [enviado, setEnviado] = useState(false);
+  
+    const handleChange = e => {
+      setForm({ ...form, [e.target.name]: e.target.value });
+    };
+  
+    const handleSubmit = async e => {
+      e.preventDefault();
+      await fetch("https://apigo.online/api/contact-message/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      setEnviado(true);
+      setForm({ nombre: "", apellido: "", email: "", telefono: "", mensaje: "" });
+    };
 
   // Cambia este número por el tuyo real de WhatsApp
   const whatsappNumber = "65258464";
@@ -346,18 +377,54 @@ export default function Home() {
           </div>
           <div className="flex-1 bg-blue-50 rounded-xl shadow-md p-6">
             <h3 className="text-xl font-semibold mb-4">Envíenos un mensaje</h3>
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su nombre" />
-                <input className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su apellido" />
-              </div>
-              <input className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="correo@ejemplo.com" type="email" />
-              <input className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="Su número telefónico" />
-              <textarea className="border border-gray-300 rounded-md px-4 py-2 w-full" placeholder="¿Cómo podemos ayudarle?" rows={4} />
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium w-full hover:bg-blue-700 transition" type="submit">
-                Enviar Mensaje
-              </button>
-            </form>
+            <form className="space-y-4" onSubmit={handleSubmit}>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <input
+      name="nombre"
+      value={form.nombre}
+      onChange={handleChange}
+      className="border border-gray-300 rounded-md px-4 py-2 w-full"
+      placeholder="Su nombre"
+    />
+    <input
+      name="apellido"
+      value={form.apellido}
+      onChange={handleChange}
+      className="border border-gray-300 rounded-md px-4 py-2 w-full"
+      placeholder="Su apellido"
+    />
+  </div>
+  <input
+    name="email"
+    type="email"
+    value={form.email}
+    onChange={handleChange}
+    className="border border-gray-300 rounded-md px-4 py-2 w-full"
+    placeholder="correo@ejemplo.com"
+  />
+  <input
+    name="telefono"
+    value={form.telefono}
+    onChange={handleChange}
+    className="border border-gray-300 rounded-md px-4 py-2 w-full"
+    placeholder="Su número telefónico"
+  />
+  <textarea
+    name="mensaje"
+    value={form.mensaje}
+    onChange={handleChange}
+    className="border border-gray-300 rounded-md px-4 py-2 w-full"
+    placeholder="¿Cómo podemos ayudarle?"
+    rows={4}
+  />
+  <button
+    type="submit"
+    className="bg-blue-600 text-white px-4 py-2 rounded-md font-medium w-full hover:bg-blue-700 transition"
+  >
+    Enviar Mensaje
+  </button>
+</form>
+
           </div>
         </div>
       </section>
